@@ -12,8 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\SPPControllerSPP\Entities\BankAccount;
-use App\Http\Controllers\SPPControllerSPP\Entities\SppSetting;
-
+use App\Models\SppSetting;
 
 class SettingController extends Controller
 {
