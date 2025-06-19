@@ -131,7 +131,7 @@
     }
 
     .img-side {
-        background-image: url('/assets/frontend/img/cover_login.png');
+        background-image: url('/Assets/Frontend//img/cover_login.png');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;

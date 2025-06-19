@@ -94,7 +94,7 @@
     }
 
       .img-side {
-        background-image: url('/assets/frontend/img/cover_login.png');
+        background-image: url('/Assets/Frontend//img/cover_login.png');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -125,7 +125,7 @@
         <div class="col-lg-6 d-flex align-items-center auth-bg">
             <div class="login-card mx-auto w-100 p-3">
                 <a class="brand-logo d-flex align-items-center" href="/">
-                    <img src="{{ asset('assets/frontend/img/foto_logo.png') }}" alt="Logo" width="50" height="50">
+                    <img src="{{ asset('Assets/Frontend/img/foto_logo.png') }}" alt="Logo" width="50" height="50">
                     <h2 class="brand-text text-primary ml-1 mb-0">RA Al Barokah</h2>       
                 </a>
                 @if($message = Session::get('error'))
