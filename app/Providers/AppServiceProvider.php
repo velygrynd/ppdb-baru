@@ -27,5 +27,6 @@ class AppServiceProvider extends ServiceProvider
         if (env('APP_ENV') === 'production') {
             URL::forceScheme('https');
         }
+        $this->loadViewsFrom(resource_path('views/ppdb'), 'ppdb');
     }
 }

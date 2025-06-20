@@ -27,12 +27,12 @@ class AuthController extends Controller
     public function registerView()
     {
         if (!PpdbSetting::isOpen()) {
-            return view('ppdb::auth.closed', [
+            return view('ppdb.auth.closed', [
                 'message' => PpdbSetting::getClosedMessage(),
             ]);
         }
 
-        return view('ppdb::auth.register');
+        return view('ppdb.auth.register');
     }
 
     public function registerStore(RegisterRequest $request)

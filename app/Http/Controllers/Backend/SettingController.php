@@ -6,19 +6,22 @@ use App\Http\Controllers\Controller;
 use App\Models\Bank;
 use App\Models\Kelas;
 use App\Models\Setting;
+use App\Models\User;
 use ErrorException;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\SPPControllerSPP\Entities\BankAccount;
+use App\Models\BankAccount as ModelsBankAccount;
 use App\Models\SppSetting;
+use Illuminate\Support\Facades\Log;
 
 class SettingController extends Controller
 {
     public function index(Request $request)
     {
-        $user = auth()->user();
+        $user = User::whereId(Auth::id())->first();
         $bank = Bank::all();
 
         if ($user->role === 'murid') {
@@ -47,7 +50,7 @@ class SettingController extends Controller
     public function addBank(Request $request)
     {
         try {
-            BankAccount::create([
+            ModelsBankAccount::create([
                 'user_id' => Auth::id(),
                 'account_number' => $request->account_number,
                 'account_name' => $request->account_name,
@@ -65,7 +68,7 @@ class SettingController extends Controller
     public function updateBank(Request $request, $id)
     {
         try {
-            $bankAccount = BankAccount::findOrFail($id);
+            $bankAccount = ModelsBankAccount::findOrFail($id);
             $bankAccount->update([
                 'account_number' => $request->account_number,
                 'account_name' => $request->account_name,
@@ -82,7 +85,7 @@ class SettingController extends Controller
     public function deleteBank($id)
     {
         try {
-            $bankAccount = BankAccount::findOrFail($id);
+            $bankAccount = ModelsBankAccount::findOrFail($id);
             $bankAccount->delete();
             Session::flash('success', 'Akun Bank Berhasil Dihapus.');
             return back();
@@ -133,7 +136,7 @@ class SettingController extends Controller
             return back();
             
         } catch (Exception $e) {
-            \Log::error('Error storing SPP Setting: ' . $e->getMessage());
+            Log::error('Error storing SPP Setting: ' . $e->getMessage());
             Session::flash('error', 'Terjadi kesalahan saat menyimpan setting SPP: ' . $e->getMessage());
             return back()->withInput();
         }
@@ -180,7 +183,7 @@ class SettingController extends Controller
             Session::flash('success', 'Setting SPP Berhasil Diupdate.');
             return back();
         } catch (Exception $e) {
-            \Log::error('Error updating SPP Setting: ' . $e->getMessage());
+            Log::error('Error updating SPP Setting: ' . $e->getMessage());
             Session::flash('error', 'Terjadi kesalahan saat mengupdate setting SPP: ' . $e->getMessage());
             return back();
         }
@@ -195,7 +198,7 @@ class SettingController extends Controller
             Session::flash('success', 'Setting SPP Berhasil Dihapus.');
             return back();
         } catch (Exception $e) {
-            \Log::error('Error deleting SPP Setting: ' . $e->getMessage());
+            Log::error('Error deleting SPP Setting: ' . $e->getMessage());
             Session::flash('error', 'Terjadi kesalahan saat menghapus setting SPP: ' . $e->getMessage());
             return back();
         }
