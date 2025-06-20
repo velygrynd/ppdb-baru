@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\SPPControllerSPP\Entities\BankAccount;
 use App\Models\SppSetting;
+use Illuminate\Support\Facades\Log;
 
 class SettingController extends Controller
 {
@@ -133,7 +134,7 @@ class SettingController extends Controller
             return back();
             
         } catch (Exception $e) {
-            \Log::error('Error storing SPP Setting: ' . $e->getMessage());
+            Log::error('Error storing SPP Setting: ' . $e->getMessage());
             Session::flash('error', 'Terjadi kesalahan saat menyimpan setting SPP: ' . $e->getMessage());
             return back()->withInput();
         }

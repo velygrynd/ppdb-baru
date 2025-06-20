@@ -21,7 +21,7 @@
     <div id="wrapper">
         <!-- Header Area Start Here -->
         <header>
-           @include('ppdb::layouts.header')
+           @include('ppdb.layouts.header')
         </header>
         <!-- Header Area End Here -->
 
@@ -43,7 +43,7 @@
 
         <!-- Footer Area Start Here -->
         <footer>
-            @include('ppdb::layouts.footer')
+            @include('ppdb.layouts.footer')
         </footer>
         <!-- Footer Area End Here -->
     </div>

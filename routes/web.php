@@ -30,6 +30,7 @@ use App\Http\Controllers\Backend\Pengguna\PPDBController as BackendPPDBControlle
 use App\Http\Controllers\Backend\Pengguna\BendaharaController;
 use App\Http\Controllers\MuridController;
 use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\PPDBController;
 use App\Http\Controllers\SPPController;
 
 /*
@@ -41,6 +42,13 @@ use App\Http\Controllers\SPPController;
 | Route untuk modul (Murid, SPP, PPDB) dimuat secara terpisah.
 |
 */
+Route::get('/debug-user', function () {
+    return response()->json([
+        'auth_check' => Auth::check(),
+        'auth_user' => Auth::user(),
+        'session' => session()->all()
+    ]);
+});
 
 // ======= HALAMAN DEPAN (FRONTEND) ======= \\
 Route::get('/', [FrontendIndexController::class, 'index']);
@@ -158,7 +166,7 @@ Route::group(['prefix' => 'murid', 'middleware' => ['auth', 'role:Murid'], 'as' 
 });
 
 Route::prefix('ppdb')->group(function() {
-    Route::get('/', [BackendPPDBController::class, 'index']);
+    Route::get('/', [PPDBController::class, 'index']);
     
     /// REGISTER \\\
     Route::get('/register','AuthController@registerView')->name('register');
@@ -167,7 +175,6 @@ Route::prefix('ppdb')->group(function() {
 
 //// ROLE GUEST \\\\
 Route::prefix('/ppdb')->middleware('role:Guest')->group( function (){
-
     /// DATA MURID \\\
     Route::get('form-pendaftaran','PendaftaranController@index')->name('ppdb.form-pendaftaran');
     Route::put('form-pendaftaran/{id}','PendaftaranController@update');
