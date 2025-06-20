@@ -8,6 +8,7 @@ use App\Http\Controllers\Frontend\IndexController as FrontendIndexController;
 use App\Http\Controllers\Frontend\MenuController as FrontendMenuController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PPDController;
 use App\Http\Controllers\Backend\ProfileController;
@@ -32,6 +33,10 @@ use App\Http\Controllers\MuridController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\PPDBController;
 use App\Http\Controllers\SPPController;
+use App\Http\Controllers\PendaftaranController;
+use App\Http\Controllers\DataMuridController;
+use App\Http\Controllers\PpdbSettingController;
+use App\Http\Controllers\MasterSppController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,7 +67,6 @@ Route::get('berita/{slug}', [FrontendIndexController::class, 'detailBerita'])->n
 Route::get('event/{slug}', [FrontendIndexController::class, 'detailEvent'])->name('detail.event');
 Route::get('event', [FrontendIndexController::class, 'events'])->name('event');
 
-
 // Route Otentikasi bawaan Laravel (Login, Logout)
 Auth::routes(['register' => false]);
 
@@ -71,7 +75,6 @@ Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequest
 Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
-
 
 // ======= AREA BACKEND (SETELAH LOGIN) ======= \\
 Route::middleware('auth')->group(function () {
@@ -110,7 +113,7 @@ Route::middleware('auth')->group(function () {
         Route::resources([
             'backend-pengguna-pengajar'   => PengajarController::class,
             'backend-pengguna-staf'       => StafController::class,
-            'backend-pengguna-murid'      => BackendMuridController::class, // Menggunakan alias agar tidak bentrok
+            'backend-pengguna-murid'      => BackendMuridController::class,
             'backend-pengguna-ppdb'       => BackendPPDBController::class,
             'backend-pengguna-bendahara'  => BendaharaController::class,
         ]);
@@ -131,19 +134,18 @@ Route::middleware('auth')->group(function () {
     });
 
     // ======= RUTE UNTUK MURID ======= //
-Route::middleware(['auth', 'role:Murid'])->group(function () {
-    // Dashboard Murid
-    Route::get('/murid/dashboard', [HomeController::class, 'dashboard'])->name('murid.dashboard');
+    Route::middleware(['auth', 'role:Murid'])->group(function () {
+        // Dashboard Murid
+        Route::get('/murid/dashboard', [HomeController::class, 'dashboard'])->name('murid.dashboard');
 
-    // Jadwal Pelajaran - PERBAIKAN: gunakan ProgramController::showForMurid
-    Route::get('/murid/jurusan/{kelas_id}', [App\Http\Controllers\Backend\Website\ProgramController::class, 'showForMurid'])->name('murid.jurusan');
+        // Jadwal Pelajaran
+        Route::get('/murid/jurusan/{kelas_id}', [App\Http\Controllers\Backend\Website\ProgramController::class, 'showForMurid'])->name('murid.jurusan');
 
-    // Pembayaran SPP
-    Route::prefix('pembayaran')->group(function () {
-        Route::get('/', [SPPController::class, 'murid'])->name('pembayaran.index');
+        // Pembayaran SPP
+        Route::prefix('pembayaran')->group(function () {
+            Route::get('/', [SPPController::class, 'murid'])->name('pembayaran.index');
+        });
     });
-});
-
 });
 
 // Halaman jika PPDB ditutup
@@ -151,54 +153,49 @@ Route::get('/ppd/closed', function() {
     return view('ppd.closed');
 })->name('ppd.closed');
 
-
 Route::group(['prefix' => 'murid', 'middleware' => ['auth', 'role:Murid'], 'as' => 'murid.'], function() {
-    
     // Route untuk dashboard murid
     Route::get('/', [MuridController::class, 'index'])->name('dashboard');
 
     // Resource Controller untuk Pembayaran
     Route::resource('pembayaran', PembayaranController::class);
     
-    // TAMBAHKAN ROUTE UNTUK JADWAL
+    // Route untuk jadwal
     Route::get('/jadwal', [ProgramController::class, 'showForMurid'])->name('jadwal.index');
-    
 });
 
+// PPDB Routes - DIPERBAIKI
 Route::prefix('ppdb')->group(function() {
     Route::get('/', [PPDBController::class, 'index']);
     
     /// REGISTER \\\
-    Route::get('/register','AuthController@registerView')->name('register');
-    Route::post('/register','AuthController@registerStore')->name('register.store');
+    Route::get('/register', [AuthController::class, 'registerView'])->name('register');
+    Route::post('/register', [AuthController::class, 'registerStore'])->name('register.store');
 });
 
-//// ROLE GUEST \\\\
-Route::prefix('/ppdb')->middleware('role:Guest')->group( function (){
+//// ROLE GUEST - DIPERBAIKI \\\\
+Route::prefix('/ppdb')->middleware('role:Guest')->group(function(){
     /// DATA MURID \\\
-    Route::get('form-pendaftaran','PendaftaranController@index')->name('ppdb.form-pendaftaran');
-    Route::put('form-pendaftaran/{id}','PendaftaranController@update');
-
+    Route::get('form-pendaftaran', [PendaftaranController::class, 'index'])->name('ppdb.form-pendaftaran');
+    Route::put('form-pendaftaran/{id}', [PendaftaranController::class, 'update']);
 
     /// DATA ORANG TUA \\\
-    Route::get('form-data-orangtua','PendaftaranController@dataOrtuView');
-    Route::put('form-data-orangtua/{id}','PendaftaranController@updateOrtu');
+    Route::get('form-data-orangtua', [PendaftaranController::class, 'dataOrtuView']);
+    Route::put('form-data-orangtua/{id}', [PendaftaranController::class, 'updateOrtu']);
 
     /// BERKAS MURID \\\
-    Route::get('form-berkas','PendaftaranController@berkasView');
-    Route::put('form-berkas/{id}','PendaftaranController@berkasStore');
+    Route::get('form-berkas', [PendaftaranController::class, 'berkasView']);
+    Route::put('form-berkas/{id}', [PendaftaranController::class, 'berkasStore']);
 });
 
-
-//// ROLE PPDB \\\\
-Route::prefix('/ppdb')->middleware('role:PPDB|Admin')->group( function (){
-    
+//// ROLE PPDB - DIPERBAIKI \\\\
+Route::prefix('/ppdb')->middleware('role:PPDB|Admin')->group(function(){
     /// DATA MURID \\\
-    Route::resource('data-murid','DataMuridController');
+    Route::resource('data-murid', DataMuridController::class);
     
     /// PPDB SETTINGS \\\
-    Route::get('settings','PpdbSettingController@index')->name('ppdb.settings');
-    Route::put('settings','PpdbSettingController@update')->name('ppdb.settings.update');
+    Route::get('settings', [PpdbSettingController::class, 'index'])->name('ppdb.settings');
+    Route::put('settings', [PpdbSettingController::class, 'update'])->name('ppdb.settings.update');
 });
 
 Route::group(['middleware' => ['auth', 'role:Admin|Bendahara'], 'prefix' => 'backend', 'as' => 'backend.'], function () {
@@ -223,17 +220,17 @@ Route::group(['middleware' => ['auth', 'role:Admin|Bendahara'], 'prefix' => 'spp
     // Halaman daftar murid
     Route::get('/murid', [SPPController::class, 'murid'])->name('murid.index');
     
-    // PERBAIKAN: Detail pembayaran berdasarkan user_id (bukan payment_id)
+    // Detail pembayaran berdasarkan user_id
     Route::get('/murid/{userId}/detail', [SPPController::class, 'detail'])->name('murid.detail');
     
     // Update status pembayaran
     Route::post('/murid/update-pembayaran', [SPPController::class, 'updatePembayaran'])->name('murid.update.pembayaran');
     
-    // TAMBAHAN: Route untuk konfirmasi pembayaran via AJAX
+    // Route untuk konfirmasi pembayaran via AJAX
     Route::post('/pembayaran/{id}/confirm', [SPPController::class, 'confirmPayment'])->name('payment.confirm');
 
-    // Jika MasterSppController juga di module, tambahkan use statement-nya
-    Route::resource('master-spp', 'MasterSppController')->except('show');
+    // Master SPP - DIPERBAIKI
+    Route::resource('master-spp', MasterSppController::class)->except('show');
 });
 
 /**
