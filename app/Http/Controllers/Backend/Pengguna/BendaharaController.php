@@ -18,11 +18,11 @@ class BendaharaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // public function index()
-    // {
-    //   $bendahara = User::with('userDetail')->where('role','Bendahara')->get();
-    //   return view('backend.pengguna.bendahara.index', compact('bendahara'));
-    // }
+    public function index()
+    {
+      $bendahara = User::with('userDetail')->where('role','Bendahara')->get();
+      return view('backend.pengguna.bendahara.index', compact('bendahara'));
+    }
 
     /**
      * Show the form for creating a new resource.
