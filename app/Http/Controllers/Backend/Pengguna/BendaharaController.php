@@ -20,9 +20,8 @@ class BendaharaController extends Controller
      */
     public function index()
     {
-      $bendahara = User::with('userDetail')->where('role','Bendahara')->get();
-      return view('backend.pengguna.bendahara.index', compact('bendahara'));
-      //ngnt
+        $bendahara = User::with('userDetail')->where('role', 'Bendahara')->get();
+        return view('backend.pengguna.bendahara.index', compact('bendahara'));
     }
 
     /**
@@ -32,7 +31,7 @@ class BendaharaController extends Controller
      */
     public function create()
     {
-      return view('backend.pengguna.bendahara.create');
+        return view('backend.pengguna.bendahara.create');
     }
 
     /**
@@ -43,14 +42,14 @@ class BendaharaController extends Controller
      */
     public function store(BendaharaRequest $request)
     {
-      try {
+        try {
             DB::beginTransaction();
 
             $image = $request->file('foto_profile');
-            $nama_img = time()."_".$image->getClientOriginalName();
+            $nama_img = time() . "_" . $image->getClientOriginalName();
             // isi dengan nama folder tempat kemana file diupload
             $tujuan_upload = 'public/images/profile';
-            $image->storeAs($tujuan_upload,$nama_img);
+            $image->storeAs($tujuan_upload, $nama_img);
 
             // Pilih kalimat
             $kalimatKe  = "1";
@@ -59,7 +58,7 @@ class BendaharaController extends Controller
             $user = new User;
             $user->name             = $request->name;
             $user->email            = $request->email;
-            $user->username         = strtolower($username).date("s");
+            $user->username         = strtolower($username) . date("s");
             $user->role             = 'Bendahara';
             $user->status           = 'Aktif';
             $user->foto_profile      = $nama_img;
@@ -83,9 +82,8 @@ class BendaharaController extends Controller
 
             $user->assignRole($user->role);
             DB::commit();
-            Session::flash('success','Bendahara Berhasil ditambah !');
+            Session::flash('success', 'Bendahara Berhasil ditambah !');
             return redirect()->route('backend-pengguna-bendahara.index');
-
         } catch (ErrorException $e) {
             DB::rollback();
             throw new ErrorException($e->getMessage());
@@ -111,8 +109,8 @@ class BendaharaController extends Controller
      */
     public function edit($id)
     {
-      $bendahara = User::with('userDetail')->where('role','Bendahara')->find($id);
-      return view('backend.pengguna.bendahara.edit', compact('bendahara'));
+        $bendahara = User::with('userDetail')->where('role', 'Bendahara')->find($id);
+        return view('backend.pengguna.bendahara.edit', compact('bendahara'));
     }
 
     /**
@@ -124,15 +122,15 @@ class BendaharaController extends Controller
      */
     public function update(Request $request, $id)
     {
-      try {
+        try {
             DB::beginTransaction();
 
             if ($request->foto_profile) {
                 $image = $request->file('foto_profile');
-                $nama_img = time()."_".$image->getClientOriginalName();
+                $nama_img = time() . "_" . $image->getClientOriginalName();
                 // isi dengan nama folder tempat kemana file diupload
                 $tujuan_upload = 'public/images/profile';
-                $image->storeAs($tujuan_upload,$nama_img);
+                $image->storeAs($tujuan_upload, $nama_img);
             }
 
 
@@ -160,9 +158,8 @@ class BendaharaController extends Controller
             }
 
             DB::commit();
-            Session::flash('success','Bendahara Berhasil diubah !');
+            Session::flash('success', 'Bendahara Berhasil diubah !');
             return redirect()->route('backend-pengguna-bendahara.index');
-
         } catch (ErrorException $e) {
             DB::rollback();
             throw new ErrorException($e->getMessage());
