@@ -24,5 +24,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->loadViewsFrom(resource_path('views/ppdb'), 'ppdb');
+        $this->loadViewsFrom(resource_path('views/murid'), 'murid');
+        $this->loadViewsFrom(resource_path('views/spp'), 'spp');
+        
     }
+
+    
 }
