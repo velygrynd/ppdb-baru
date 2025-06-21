@@ -7,17 +7,18 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="" method="POST"> {{-- Action akan diisi oleh Javascript --}}
+            <form action="{{ route('backend.settings.spp.update', $item->id) }}" method="POST"> 
                 @csrf
                 @method('PUT')
-                <div class="modal-body">
-                   <div class="modal-body">
+                    <div class="modal-body">
+                    <div class="modal-body">
                     <div class="form-group">
-                        <label for="kelas_id">Kelas</label>
-                        <select name="kelas_id" id="kelas_id" class="form-control select2" required style="width: 100%;">
+                        <label for="edit-kelas_id">Kelas</label>
+                        <select name="kelas_id" id="edit-kelas_id" class="form-control select2" required style="width: 100%;">
                             <option value="">-- Pilih Kelas --</option>
-                            <option value="1">Kelas A</option>
-                            <option value="2">Kelas B</option>
+                            @foreach($kelas as $k)
+                                <option value="{{ $k->id }}">{{ $k->nama }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="form-group">

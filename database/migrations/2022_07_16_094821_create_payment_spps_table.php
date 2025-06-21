@@ -18,18 +18,8 @@ class CreatePaymentSppsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->bigInteger('year');
             $table->boolean('is_active');
-            $table->enum('January',['paid','unpaid','free'])->default('unpaid');
-            $table->enum('February',['paid','unpaid','free'])->default('unpaid');
-            $table->enum('March',['paid','unpaid','free'])->default('unpaid');
-            $table->enum('April',['paid','unpaid','free'])->default('unpaid');
-            $table->enum('May',['paid','unpaid','free'])->default('unpaid');
-            $table->enum('June',['paid','unpaid','free'])->default('unpaid');
-            $table->enum('July',['paid','unpaid','free'])->default('unpaid');
-            $table->enum('August',['paid','unpaid','free'])->default('unpaid');
-            $table->enum('September',['paid','unpaid','free'])->default('unpaid');
-            $table->enum('October',['paid','unpaid','free'])->default('unpaid');
-            $table->enum('November',['paid','unpaid','free'])->default('unpaid');
-            $table->enum('December',['paid','unpaid','free'])->default('unpaid');
+            $table->enum("bulan", ["januari","februari","maret","april","mei","juni","juli","agustus","september","oktober","november","desember"]);
+            $table->bigInteger("amount");
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');

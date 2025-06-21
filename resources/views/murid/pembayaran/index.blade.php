@@ -8,8 +8,9 @@
                     <div class="card-header">
                         <h4 class="card-title mb-0"><i class="fas fa-credit-card"></i> Tagihan SPP Anda</h4>
                         @if(isset($kelas))
-                            <small class="text-muted">Kelas: {{ $kelas->name ?? 'Tidak diketahui' }}</small>
+                            <small class="text-muted">Kelas: {{ $kelas->nama ?? 'Tidak diketahui' }}</small>
                         @endif
+                        
                     </div>
                     <div class="card-body">
                         {{-- Alert Messages --}}
@@ -56,7 +57,7 @@
                             </div>
                         @endif
 
-                        @if(!isset($tagihanBulanan) || $tagihanBulanan->isEmpty())
+                        @if(!isset($tagihanBulanan))
                             <div class="alert alert-warning">
                                 <h5 class="mb-1"><i class="fas fa-exclamation-triangle"></i> Setting SPP Belum Tersedia</h5>
                                 <p class="mb-0">Hubungi Admin untuk mengatur SPP kelas Anda.</p>
@@ -129,7 +130,7 @@
                                             ">
                                                 <td>{{ $index + 1 }}</td>
                                                 <td><strong>{{ $tagihan['bulan'] }}</strong></td>
-                                                <td><span class="badge bg-info">{{ $tagihan['tahun_ajaran'] }}</span></td>
+                                                <td><span class="badge bg-info">{{ $tagihan['year'] }}</span></td>
                                                 <td><strong class="text-success">Rp {{ number_format($tagihan['jumlah'], 0, ',', '.') }}</strong></td>
                                                 <td>
                                                     @if ($tagihan['status'] == 'Lunas')
@@ -146,22 +147,18 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    @if ($tagihan['status'] == 'Belum Lunas')
-                                                        <button class="btn btn-primary btn-sm bayar-btn"
+                                                    @if ($tagihan['status'] == 'belum_bayar')
+                                                        <a href="{{ route('murid.pembayaran.edit', $tagihan['id']) }}" class="btn btn-primary btn-sm bayar-btn"
                                                             data-bulan="{{ $tagihan['bulan'] }}"
                                                             data-nominal="{{ number_format($tagihan['jumlah'], 0, ',', '.') }}"
                                                             data-nominal-raw="{{ $tagihan['jumlah'] }}"
                                                             data-tahun-ajaran="{{ $tagihan['tahun_ajaran'] }}" 
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#paymentModal">
-                                                            <i class="fas fa-money-bill-wave"></i> Bayar
-                                                        </button>
-                                                    @elseif ($tagihan['status'] == 'Ditolak' && isset($tagihan['detail']) && $tagihan['detail'])
-                                                        <a href="{{ route('murid.pembayaran.edit', ['pembayaran' => $tagihan['detail']->id]) }}"
-                                                            class="btn btn-danger btn-sm"> 
-                                                            <i class="fas fa-redo"></i> Bayar Ulang
+                                                            
+                                                            <i class="fas fa-money-bill-wave"></i> Bayar 
                                                         </a>
-                                                    @elseif (in_array($tagihan['status'], ['Lunas', 'Menunggu Konfirmasi']) && isset($tagihan['detail']) && $tagihan['detail'] && $tagihan['detail']->file)
+                                                    @elseif (in_array($tagihan['status'], ['lunas', 'menunggu_konfirmasi']) && isset($tagihan['detail']) && $tagihan['detail'] && $tagihan['detail']->file)
                                                         <a href="{{ asset('storage/images/bukti_payment/' . $tagihan['detail']->file) }}"
                                                             target="_blank" class="btn btn-info btn-sm">
                                                             <i class="fas fa-eye"></i> Lihat Bukti

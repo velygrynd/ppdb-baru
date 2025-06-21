@@ -1,7 +1,7 @@
 @extends('layouts.backend.app')
 
 @section('title')
-   Tambah Murid
+Tambah Murid
 @endsection
 
 @section('content')
