@@ -231,6 +231,7 @@ Route::group(['middleware' => ['auth', 'role:Admin|Bendahara'], 'prefix' => 'spp
 
     // Master SPP - DIPERBAIKI
     Route::resource('master-spp', MasterSppController::class)->except('show');
+    // Master Bank - DIPERBAIKI
 });
 
 /**
