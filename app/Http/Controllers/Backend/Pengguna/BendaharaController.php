@@ -22,6 +22,7 @@ class BendaharaController extends Controller
     {
       $bendahara = User::with('userDetail')->where('role','Bendahara')->get();
       return view('backend.pengguna.bendahara.index', compact('bendahara'));
+      //ngnt
     }
 
     /**
