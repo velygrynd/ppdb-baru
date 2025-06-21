@@ -181,7 +181,7 @@ class DataMuridController extends Controller
 
     // Create Data Payment
     public function payment($murid)
-    {
+    {       
       try {
         DB::beginTransaction();
         $payment = PaymentSpp::create([

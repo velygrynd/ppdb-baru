@@ -8,7 +8,7 @@
     .auth-wrapper {
         position: relative;
         overflow: hidden;
-        background: linear-gradient(120deg, #e8f5e9 0%, #4CAF50 100%);
+        background: linear-gradient(120deg, #EDE7F6 0%, #673AB7 100%);
         height: 100vh;
         max-height: 100vh;
     }
@@ -21,21 +21,21 @@
         filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
     }
 
-    .circle-1 { top: 5%; left: 5%; animation: float 4s ease-in-out infinite; color: #4CAF50; }
-    .circle-2 { top: 15%; left: 35%; animation: float 3.5s ease-in-out infinite 0.2s; color: #81C784; }
-    .circle-3 { top: 35%; left: 15%; animation: float 4.5s ease-in-out infinite 0.4s; color: #66BB6A; }
-    .circle-4 { top: 55%; left: 35%; animation: float 3.8s ease-in-out infinite 0.6s; color: #A5D6A7; }
-    .circle-5 { top: 75%; left: 5%; animation: float 4.2s ease-in-out infinite 0.8s; color: #2E7D32; }
-    .circle-6 { top: 25%; left: 55%; animation: float 3.6s ease-in-out infinite 1s; color: #43A047; }
-    .circle-7 { top: 45%; left: 65%; animation: float 4.1s ease-in-out infinite 1.2s; color: #388E3C; }
-    .circle-8 { top: 65%; left: 55%; animation: float 3.9s ease-in-out infinite 1.4s; color: #1B5E20; }
-    .circle-9 { top: 85%; left: 75%; animation: float 4.3s ease-in-out infinite 1.6s; color: #C8E6C9; }
-    .circle-10 { top: 10%; left: 85%; animation: float 4s ease-in-out infinite 1.8s; color: #81C784; }
-    .circle-11 { top: 30%; left: 80%; animation: float 3.7s ease-in-out infinite 2s; color: #A5D6A7; }
-    .circle-12 { top: 50%; left: 90%; animation: float 4.4s ease-in-out infinite 2.2s; color: #66BB6A; }
-    .circle-13 { top: 70%; left: 85%; animation: float 3.8s ease-in-out infinite 2.4s; color: #4CAF50; }
-    .circle-14 { top: 90%; left: 90%; animation: float 4.2s ease-in-out infinite 2.6s; color: #2E7D32; }
-    .circle-15 { top: 20%; left: 25%; animation: float 3.9s ease-in-out infinite 2.8s; color: #1B5E20; }
+    .circle-1 { top: 5%; left: 5%; animation: float 4s ease-in-out infinite; color: #673AB7; }
+    .circle-2 { top: 15%; left: 35%; animation: float 3.5s ease-in-out infinite 0.2s; color: #9575CD; }
+    .circle-3 { top: 35%; left: 15%; animation: float 4.5s ease-in-out infinite 0.4s; color: #7E57C2; }
+    .circle-4 { top: 55%; left: 35%; animation: float 3.8s ease-in-out infinite 0.6s; color: #B39DDB; }
+    .circle-5 { top: 75%; left: 5%; animation: float 4.2s ease-in-out infinite 0.8s; color: #512DA8; }
+    .circle-6 { top: 25%; left: 55%; animation: float 3.6s ease-in-out infinite 1s; color: #5E35B1; }
+    .circle-7 { top: 45%; left: 65%; animation: float 4.1s ease-in-out infinite 1.2s; color: #4527A0; }
+    .circle-8 { top: 65%; left: 55%; animation: float 3.9s ease-in-out infinite 1.4s; color: #311B92; }
+    .circle-9 { top: 85%; left: 75%; animation: float 4.3s ease-in-out infinite 1.6s; color: #D1C4E9; }
+    .circle-10 { top: 10%; left: 85%; animation: float 4s ease-in-out infinite 1.8s; color: #9575CD; }
+    .circle-11 { top: 30%; left: 80%; animation: float 3.7s ease-in-out infinite 2s; color: #B39DDB; }
+    .circle-12 { top: 50%; left: 90%; animation: float 4.4s ease-in-out infinite 2.2s; color: #7E57C2; }
+    .circle-13 { top: 70%; left: 85%; animation: float 3.8s ease-in-out infinite 2.4s; color: #673AB7; }
+    .circle-14 { top: 90%; left: 90%; animation: float 4.2s ease-in-out infinite 2.6s; color: #512DA8; }
+    .circle-15 { top: 20%; left: 25%; animation: float 3.9s ease-in-out infinite 2.8s; color: #311B92; }
 
     @keyframes float {
         0%, 100% {
@@ -72,25 +72,25 @@
     }
 
     .btn-primary {
-        background-color: #4CAF50 !important;
-        border-color: #4CAF50 !important;
+        background-color: #673AB7 !important;
+        border-color: #673AB7 !important;
     }
 
     .btn-primary:hover {
-        background-color: #388E3C !important;
-        border-color: #388E3C !important;
+        background-color: #512DA8 !important;
+        border-color: #512DA8 !important;
     }
 
     .text-primary {
-        color: #4CAF50 !important;
+        color: #673AB7 !important;
     }
 
     a {
-        color: #4CAF50;
+        color: #673AB7;
     }
 
     a:hover {
-        color: #388E3C;
+        color: #512DA8;
     }
 
       .img-side {
