@@ -7,9 +7,9 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('backend.settings.spp.update', $item->id) }}" method="POST"> 
-                @csrf
-                @method('PUT')
+            <form method="POST" id="edit-spp-form">
+    @csrf
+    @method('PUT')
                     <div class="modal-body">
                     <div class="modal-body">
                     <div class="form-group">
