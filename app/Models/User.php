@@ -129,10 +129,10 @@ class User extends Authenticatable
     /**
      * Get all the detailed SPP payment records for the user.
      */
-    public function detailPaymentSpp()
-    {
-        return $this->hasMany(DetailPaymentSpp::class, 'user_id', 'id');
-    }
+    public function details()
+{
+    return $this->hasMany(DetailPaymentSpp::class, 'payment_id', 'id');
+}
 
     public function sppSettings() {
         return $this->hasMany(SppSetting::class, 'kelas_id', 'kelas_id');
@@ -143,7 +143,7 @@ class User extends Authenticatable
      */
     public function getCurrentSppSetting($bulan = null, $tahunAjaran = '2024/2025') {
         $query = SppSetting::where('kelas_id', $this->kelas_id)
-                                                ->where('tahun_ajaran', $tahunAjaran);
+        ->where('tahun_ajaran', $tahunAjaran);
         
         if ($bulan) {
             $query->where('bulan', $bulan);

@@ -250,7 +250,7 @@ Route::group(['middleware' => ['auth', 'role:Murid'], 'prefix' => 'murid/pembaya
     Route::get('/{id}/edit', [SPPController::class, 'editPayment'])->name('edit');
 
     // Route untuk memproses form upload bukti pembayaran
-    Route::put('/{id}', [SPPController::class, 'updatePayment'])->name('update');
+    Route::post('/{id}', [SPPController::class, 'updatePayment'])->name('update');
 });
 
 /**

@@ -28,5 +28,10 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
         $this->loadViewsFrom(resource_path('views/ppdb'), 'ppdb');
+        $this->loadViewsFrom(resource_path('views/murid'), 'murid');
+        $this->loadViewsFrom(resource_path('views/spp'), 'spp');
+        
     }
+
+    
 }

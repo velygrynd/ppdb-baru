@@ -176,9 +176,10 @@ class PembayaranController extends Controller
     {
         try {
             // Ambil data pembayaran milik murid yang login
-            $payment = DetailPaymentSpp::with(['user.muridDetail', 'sppSetting'])
-                ->where('user_id', Auth::id())
-                ->findOrFail($id);
+            $payment = DetailPaymentSpp::with(['payment'])->first();
+                // ->where('payment_id', Auth::id())
+                // ->findOrFail($id);
+            $user = User::find($payment->payment->user_id);
 
             // Cek status pembayaran
             if ($payment->status == 'paid') {
@@ -205,9 +206,10 @@ class PembayaranController extends Controller
                 return back()->with('error', 'Rekening tujuan pembayaran tidak ditemukan. Hubungi Administrator.');
             }
 
-            return view('murid::pembayaran.edit', compact('payment', 'accountbanks', 'bank'));
+            return view('murid::pembayaran.edit', compact('payment', 'user', 'accountbanks', 'bank'));
 
         } catch (\Exception $e) {
+            dd($e);
             Log::error('Error in PembayaranController@edit: ' . $e->getMessage());
             return back()->with('error', 'Data pembayaran tidak ditemukan.');
         }
@@ -216,51 +218,50 @@ class PembayaranController extends Controller
     /**
      * Update konfirmasi pembayaran dari murid
      */
-    public function update(ConfirmPaymentRequest $request, $id)
-    {
-        try {
-            DB::beginTransaction();
+    public function update(ConfirmPaymentRequest $request, DetailPaymentSpp $pembayaran)
+{
+    try {
+        DB::beginTransaction();
 
-            $payment = DetailPaymentSpp::where('user_id', Auth::id())->findOrFail($id);
-
-            // Handle file upload
-            $file_payment = $payment->file; // Keep existing file as default
-            if ($request->hasFile('file')) {
-                $file = $request->file('file');
-                $file_payment = 'payment-'.time().'-'.Auth::id().".".$file->getClientOriginalExtension();
-                $tujuan_upload = 'public/images/bukti_payment';
-                $file->storeAs($tujuan_upload, $file_payment);
-
-                // Hapus file lama jika ada
-                if ($payment->file && Storage::exists('public/images/bukti_payment/'.$payment->file)) {
-                    Storage::delete('public/images/bukti_payment/'.$payment->file);
-                }
-            }
-
-            // Update data pembayaran
-            $payment->update([
-                'file' => $file_payment,
-                'date_file' => $request->date_file,
-                'sender' => $request->sender,
-                'bank_sender' => $request->bank_sender,
-                'destination_bank' => $request->destination_bank,
-                'status' => 'pending', // Set status menjadi pending untuk menunggu konfirmasi admin
-                'admin_note' => null, // Reset admin note
-                'approved_by' => null,
-                'approved_at' => null
-            ]);
-
-            DB::commit();
-
-            Session::flash('success', 'Bukti pembayaran berhasil dikirim. Mohon tunggu konfirmasi dari Administrator.');
-            return redirect()->route('pembayaran.index');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Error in PembayaranController@update: ' . $e->getMessage());
-            return back()->with('error', 'Terjadi kesalahan saat mengirim bukti pembayaran. Silakan coba lagi.');
+        // Pastikan pembayaran milik user yang login
+        if ($pembayaran->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized access');
         }
+
+        // Handle file upload
+        $file_payment = $pembayaran->file; // Keep existing file as default
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $file_payment = 'payment-'.time().'-'.Auth::id().".".$file->getClientOriginalExtension();
+            $tujuan_upload = 'public/images/bukti_payment';
+            $file->storeAs($tujuan_upload, $file_payment);
+
+            // Hapus file lama jika ada
+            if ($pembayaran->file && Storage::exists('public/images/bukti_payment/'.$pembayaran->file)) {
+                Storage::delete('public/images/bukti_payment/'.$pembayaran->file);
+            }
+        }
+        // Update data pembayaran
+        $pembayaran->update([
+            'file' => $file_payment,
+            'sender' => $request->sender,
+            'status' => 'pending',
+            'admin_note' => null,
+            'approved_by' => null,
+            'approved_at' => null
+        ]);
+
+        DB::commit();
+
+        Session::flash('success', 'Bukti pembayaran berhasil dikirim ulang. Mohon tunggu konfirmasi dari Administrator.');
+        return redirect()->route('murid.pembayaran.index');
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        Log::error('Error in PembayaranController@update: ' . $e->getMessage());
+        return back()->with('error', 'Terjadi kesalahan saat mengirim bukti pembayaran. Silakan coba lagi.');
     }
+}
 
     /**
      * Hapus pembayaran (opsional)
@@ -292,7 +293,7 @@ class PembayaranController extends Controller
 
             DB::commit();
 
-            return redirect()->route('pembayaran.index')
+            return redirect()->route('murid.pembayaran.index')
                 ->with('success', 'Tagihan pembayaran berhasil dihapus.');
 
         } catch (\Exception $e) {

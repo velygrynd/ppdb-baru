@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Backend\Pengguna;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Controllers\SPPControllerPPDB\Entities\PpdbSetting;
+use App\Models\PpdbSetting;
 use Session;
 use DB;
 

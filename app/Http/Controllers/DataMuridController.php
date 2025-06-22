@@ -106,6 +106,7 @@ class DataMuridController extends Controller
 
             $murid = User::find($id);
             $murid->role = 'Murid';
+
             $murid->update();
 
             if ($murid) {
@@ -187,6 +188,7 @@ class DataMuridController extends Controller
         $payment = PaymentSpp::create([
           'user_id'   => $murid,
           'year'      => date('Y'),
+          'amount'=> 0,
           'is_active' =>  1
         ]);
 
@@ -194,7 +196,6 @@ class DataMuridController extends Controller
             $spp = SppSetting::first();
             DetailPaymentSpp::create([
                 'payment_id'  => $payment->id,
-                'user_id'     => $murid,
                 'month'       => date('F'),
                 'amount'      => $spp->amount,
                 'status'      => 'unpaid',

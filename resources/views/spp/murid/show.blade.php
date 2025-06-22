@@ -53,10 +53,9 @@
                     <thead class="table-light">
                         <tr>
                             <th>No</th>
-                            <th>Bulan</th>
+                            <th>bulan</th>
                             <th>Jumlah</th>
                             <th>Status</th>
-                            <th>Dikonfirmasi Oleh</th>
                             <th>Tgl Konfirmasi</th>
                             <th>Aksi</th>
                         </tr>
@@ -65,7 +64,7 @@
                         @foreach ($payment->detailPayment as $key => $detail)
                         <tr>
                             <td class="text-center">{{ $key + 1 }}</td>
-                            <td>{{ $detail->month }}</td>
+                            <td>{{ $payment->payment->month }}</td>
                             <td>Rp {{ number_format($detail->amount) }}</td>
                             <td class="text-center">
                                 @if ($detail->status == 'paid')

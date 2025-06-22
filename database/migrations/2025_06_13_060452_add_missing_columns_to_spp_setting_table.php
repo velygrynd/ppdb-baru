@@ -17,7 +17,7 @@ class AddMissingColumnsToSppSettingTable extends Migration
             // Tambahkan kolom yang hilang
             $table->unsignedBigInteger('kelas_id')->after('amount');
             $table->string('tahun_ajaran', 20)->after('kelas_id');
-            $table->string('bulan', 20)->nullable()->after('tahun_ajaran');
+            $table->enum("bulan", ["januari","februari","maret","april","mei","juni","juli","agustus","september","oktober","november","desember"])->nullable()->after('tahun_ajaran');
             
             // Tambahkan foreign key untuk kelas_id
             $table->foreign('kelas_id')

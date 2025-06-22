@@ -14,7 +14,7 @@ class AddColumnInDetailPaymentSppsTable extends Migration
     public function up()
     {
         Schema::table('detail_payment_spps', function (Blueprint $table) {
-            $table->string('sender')->after('user_id')->nullable();
+            $table->string('sender')->after('amount')->nullable();
             $table->string('bank_sender')->after('sender')->nullable();
             $table->string('destination_bank')->after('bank_sender')->nullable();
         });

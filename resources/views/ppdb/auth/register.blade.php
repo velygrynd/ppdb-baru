@@ -7,9 +7,8 @@
     .auth-wrapper {
         position: relative;
         overflow: hidden;
-        background: linear-gradient(120deg, #e8f5e9 0%, #4CAF50 100%);
-        height: 100vh;
-        max-height: 100vh;
+        background: linear-gradient(120deg, #e8f5e9 0%, #615AC8 100%);
+        min-height: 100vh;
     }
 
     .floating-circle {
@@ -50,63 +49,74 @@
     .auth-inner {
         position: relative;
         z-index: 1;
-        background-color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        align-items: stretch;
+        margin: 0px auto;
+        max-width: 1100px;
+        /* background: rgba(255, 255, 255, 0.9); */
         backdrop-filter: blur(10px);
         border-radius: 20px;
         box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+        overflow: hidden;
+        min-height: calc(100vh - 40px);
+    }
 
-
-        margin: 20px auto;
-        padding: 30px;
-        height: calc(100vh - 40px);
-        overflow-y: auto;
-        max-width: 1200px;
+    .login-section {
+        flex: 1;
+        min-width: 300px;
+        padding: 20px;
         display: flex;
         align-items: center;
+        justify-content: center;
     }
 
     .login-card {
         background: rgba(255, 255, 255, 0.95);
         border-radius: 15px;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-        padding: 2rem !important;
+        padding: 30px;
+        width: 100%;
+        max-width: 500px;
     }
 
-    .brand-logo {
-        text-decoration: none;
-        margin-bottom: 2rem;
-    }
-
-    .brand-logo img {
-        margin-right: 1rem;
+    .image-section {
+        flex: 1;
+        min-width: 300px;
+        background-color: #ffffff;
+        background-image: url('/Assets/Frontend/img/cover_login.png');
+        background-size: 90%;
+        background-position: center;
+        background-repeat: no-repeat;
+        border-radius: 0 20px 20px 0;
+        min-height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     body {
-        overflow: hidden;
+        overflow-x: hidden;
     }
 
     .btn-primary {
-        background-color: #4CAF50 !important;
-        border-color: #4CAF50 !important;
-        padding: 0.75rem 1.5rem;
-        font-weight: 600;
+        background-color: #615AC8 !important;
+        /* border-color: #615AC8 !important; */
     }
 
     .btn-primary:hover {
-        background-color: #388E3C !important;
-        border-color: #388E3C !important;
+        background-color: #3d4b70 !important;
     }
 
     .text-primary {
-        color: #4CAF50 !important;
+        color: #615AC8 !important;
     }
 
     a {
-        color: #4CAF50;
+        color: #615AC8;
     }
 
     a:hover {
-        color: #388E3C;
+        color: #3d4b70;
     }
 
     .form-row {
@@ -115,28 +125,111 @@
         margin-bottom: 1rem;
     }
 
-    .form-group {
-        margin-bottom: 1.5rem;
+    .form-row .form-group {
+        flex: 1;
+        margin-bottom: 1rem;
     }
 
-    .form-label {
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        display: block;
+    /* Responsive adjustments */
+    @media (max-width: 991px) {
+        /* .auth-inner {
+            flex-direction: column;
+        } */
+        
+        .login-section {
+            order: 1;
+            min-height: auto;
+        }
+        
+        .image-section {
+            order: 2;
+            min-height: 250px;
+            border-radius: 0 0 20px 20px;
+            background-size: 95%;
+        }
+        
+        .login-card {
+            padding: 20px;
+        }
+
+        .form-row {
+            flex-direction: column;
+            gap: 0;
+        }
     }
 
-    .form-control {
-        padding: 0.75rem 1rem;
-        border-radius: 8px;
+    @media (max-width: 768px) {
+        .auth-wrapper {
+            min-height: 100vh;
+        }
+        
+        /* .auth-inner {
+            flex-direction: column;
+        } */
+        
+        .login-card {
+            padding: 15px;
+        }
+        
+        .floating-circle {
+            font-size: 2rem;
+        }
+        
+        .image-section {
+            min-height: 200px;
+            background-size: 100%;
+        }
+
+        .form-row {
+            flex-direction: column;
+            gap: 0;
+        }
     }
 
-    .img-side {
-        background-image: url('/Assets/Frontend//img/cover_login.png');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        height: 100%;
-        margin: 0;
+    @media (max-width: 576px) {
+        /* .auth-inner {
+            border-radius: 10px;
+        } */
+        
+        .login-card {
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .image-section {
+            border-radius: 0 0 10px 10px;
+            min-height: 180px;
+            background-size: 100%;
+        }
+        
+        .floating-circle {
+            font-size: 1.5rem;
+        }
+    }
+
+    /* Ensure image is visible on large screens */
+    @media (min-width: 992px) {
+        /* .auth-inner {
+            flex-direction: row;
+        } */
+        
+        .login-section {
+            flex: 0 0 50%;
+        }
+        
+        .image-section {
+            flex: 0 0 50%;
+            border-radius: 0 20px 20px 0;
+            min-height: 500px;
+            background-size: 85%;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .image-section {
+            min-height: 600px;
+            background-size: 80%;
+        }
     }
 </style>
 
@@ -156,19 +249,25 @@
     <div class="floating-circle circle-13">⚪</div>
     <div class="floating-circle circle-14">⚪</div>
     <div class="floating-circle circle-15">⚪</div>
-
+    
     <div class="auth-inner">
-
-
-        <div class="col-lg-6">
+        <!-- Register Section -->
+        <div class="login-section">
             <div class="login-card">
-                <a class="brand-logo d-flex align-items-center" href="/">
-                    <img src="{{asset('assets/frontend/img/foto_logo.png')}}" alt="Logo" width="50" height="50">
-                    <h2 class="brand-text text-primary ml-1 mb-0">RA Al Barokah</h2>
+                <a class="brand-logo d-flex align-items-center mb-3" href="/">
+                    <img src="{{ asset('Assets/Frontend/img/foto_logo.png') }}" alt="Logo" width="50" height="50">
+                    <h2 class="brand-text text-primary ml-2 mb-0">RA Al Barokah</h2>       
                 </a>
-
+                
                 @if($message = Session::get('error'))
                     <div class="alert alert-danger">
+                        <div class="alert-body">
+                            <strong>{{ $message }}</strong>
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                        </div>
+                    </div>
+                @elseif($message = Session::get('success'))
+                    <div class="alert alert-success">
                         <div class="alert-body">
                             <strong>{{ $message }}</strong>
                             <button type="button" class="close" data-dismiss="alert">×</button>
@@ -177,84 +276,79 @@
                 @endif
 
                 <h2 class="card-title font-weight-bold mb-1">Welcome to RA Al Barokah! 👋</h2>
-                <p class="card-text mb-2">Pendaftaran PPDB RA Al barokah</p>
+                <p class="card-text mb-3">Pendaftaran PPDB RA Al Barokah</p>
 
-                <form class="auth-login-form mt-2" action="{{route('register.store')}}" method="POST">
+                <form class="auth-login-form" action="{{ route('register.store') }}" method="POST">
                     @csrf
                     <div class="form-row">
-                        <div class="form-group" style="flex: 1;">
-                            <label class="form-label">Nama Lengkap</label>
-                            <input class="form-control @error('name') is-invalid @enderror" type="text" name="name" value="{{old('name')}}" placeholder="Masukan Nama Lengkap" autofocus="" tabindex="1" />
+                        <div class="form-group">
+                            <label for="register-name">Nama Lengkap</label>
+                            <input type="text" id="register-name" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" placeholder="Masukan Nama Lengkap" autofocus>
                             @error('name')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
+                                <span class="invalid-feedback d-block">{{ $message }}</span>
                             @enderror
                         </div>
 
-                        <div class="form-group" style="flex: 1;">
-                            <label class="form-label">Email</label>
-                            <input class="form-control @error('email') is-invalid @enderror" type="email" name="email" value="{{old('email')}}" placeholder="Masukan Email" tabindex="2" />
+                        <div class="form-group">
+                            <label for="register-email">Email</label>
+                            <input type="email" id="register-email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" placeholder="Masukan Email">
                             @error('email')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
+                                <span class="invalid-feedback d-block">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>
 
                     <div class="form-row">
-                        <div class="form-group" style="flex: 1;">
-                            <label class="form-label">No WhatApp </label>
-                            <input class="form-control @error('whatsapp') is-invalid @enderror" type="text" name="whatsapp" value="{{old('whatsapp')}}" placeholder="Masukan No WhatsApp" tabindex="3" />
+                        <div class="form-group">
+                            <label for="register-whatsapp">No WhatsApp</label>
+                            <input type="text" id="register-whatsapp" class="form-control @error('whatsapp') is-invalid @enderror" name="whatsapp" value="{{ old('whatsapp') }}" placeholder="Masukan No WhatsApp">
                             @error('whatsapp')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
+                                <span class="invalid-feedback d-block">{{ $message }}</span>
                             @enderror
                         </div>
 
-                        <div class="form-group" style="flex: 1;">
-                            <label class="form-label">Password Login</label>
+                        <div class="form-group">
+                            <label for="register-password">Password Login</label>
                             <div class="input-group input-group-merge form-password-toggle">
-                                <input class="form-control form-control-merge @error('password') is-invalid @enderror" type="password" name="password" placeholder="············" tabindex="4" />
+                                <input type="password" id="register-password" class="form-control form-control-merge @error('password') is-invalid @enderror" name="password" placeholder="············">
                                 <div class="input-group-append"><span class="input-group-text cursor-pointer"><i data-feather="eye"></i></span></div>
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Konfirmasi Password</label>
-                        <div class="input-group input-group-merge form-password-toggle">
-                            <input class="form-control form-control-merge @error('confirm_password') is-invalid @enderror" type="password" name="confirm_password" placeholder="············" tabindex="5" />
-                            <div class="input-group-append"><span class="input-group-text cursor-pointer"><i data-feather="eye"></i></span></div>
-                            @error('confirm_password')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
+                            @error('password')
+                                <span class="invalid-feedback d-block">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <div class="custom-control custom-checkbox">
-                            <input class="custom-control-input" id="remember-me" type="checkbox" tabindex="6" />
-                            <label class="custom-control-label" for="remember-me">Remember Me</label>
+                        <label for="register-confirm-password">Konfirmasi Password</label>
+                        <div class="input-group input-group-merge form-password-toggle">
+                            <input type="password" id="register-confirm-password" class="form-control form-control-merge @error('confirm_password') is-invalid @enderror" name="confirm_password" placeholder="············">
+                            <div class="input-group-append"><span class="input-group-text cursor-pointer"><i data-feather="eye"></i></span></div>
                         </div>
+                        @error('confirm_password')
+                            <span class="invalid-feedback d-block">{{ $message }}</span>
+                        @enderror
                     </div>
 
-                    <button class="btn btn-primary btn-block" tabindex="7">Daftar</button>
+                    <div class="form-group form-check">
+                        <input class="form-check-input" id="remember-me" type="checkbox">
+                        <label class="form-check-label" for="remember-me">Remember Me</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mb-3">Daftar</button>
                 </form>
+
+                <p class="text-center">
+                    Sudah punya akun? <a href="{{ route('login') }}">Masuk Sekarang</a>
+                </p>
             </div>
         </div>
+        <!-- /Register Section -->
 
-
-        <div class="col-lg-6 img-side"></div>
+        <!-- Image Section -->
+        <div class="image-section">
+        </div>
+        <!-- /Image Section -->
     </div>
 </div>
 @endsection

@@ -7,9 +7,8 @@
     .auth-wrapper {
         position: relative;
         overflow: hidden;
-        background: linear-gradient(120deg, #e8f5e9 0%, #4CAF50 100%);
-        height: 100vh;
-        max-height: 100vh;
+        background: linear-gradient(120deg, #e8f5e9 0%, #615AC8 100%);
+        min-height: 100vh;
     }
 
     .floating-circle {
@@ -50,56 +49,166 @@
     .auth-inner {
         position: relative;
         z-index: 1;
-        background-color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        align-items: stretch;
+        margin: 20px auto;
+        max-width: 1100px;
+        /* background: rgba(255, 255, 255, 0.9); */
         backdrop-filter: blur(10px);
         border-radius: 20px;
         box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
-        margin: 20px;
+        overflow: hidden;
+        min-height: calc(100vh - 40px);
+    }
+
+    .login-section {
+        flex: 1;
+        min-width: 300px;
         padding: 20px;
-        height: calc(100vh - 40px);
-        overflow-y: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .login-card {
         background: rgba(255, 255, 255, 0.95);
         border-radius: 15px;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .image-section {
+        flex: 1;
+        min-width: 300px;
+        background-color: #ffffff;
+        background-image: url('/Assets/Frontend/img/cover_login.png');
+        background-size: 90%;
+        background-position: center;
+        background-repeat: no-repeat;
+        border-radius: 0 20px 20px 0;
+        min-height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     body {
-        overflow: hidden;
+        overflow-x: hidden;
     }
 
     .btn-primary {
-        background-color: #4CAF50 !important;
-        border-color: #4CAF50 !important;
+        background-color: #615AC8 !important;
+        border-color: #615AC8 !important;
     }
 
     .btn-primary:hover {
-        background-color: #388E3C !important;
-        border-color: #388E3C !important;
+        background-color: #3d4b70 !important;
     }
 
     .text-primary {
-        color: #4CAF50 !important;
+        color: #615AC8 !important;
     }
 
     a {
-        color: #4CAF50;
+        color: #615AC8;
     }
 
     a:hover {
-        color: #388E3C;
+        color: #3d4b70;
     }
 
-    .img-side {
-        background-image: url('/Assets/Frontend//img/cover_login.png');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-         height: 80%;
-        margin-top: 80px;
-        margin-bottom: 0;
+    /* Responsive adjustments */
+    @media (max-width: 991px) {
+        .auth-inner {
+            flex-direction: column;
+        }
+        
+        .login-section {
+            order: 1;
+            min-height: auto;
+        }
+        
+        .image-section {
+            order: 2;
+            min-height: 250px;
+            border-radius: 0 0 20px 20px;
+            background-size: 95%;
+        }
+        
+        .login-card {
+            padding: 20px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .auth-wrapper {
+            min-height: 100vh;
+        }
+        
+        /* .auth-inner {
+            flex-direction: column;
+        } */
+        
+        .login-card {
+            padding: 15px;
+        }
+        
+        .floating-circle {
+            font-size: 2rem;
+        }
+        
+        .image-section {
+            min-height: 200px;
+            background-size: 100%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        /* .auth-inner {
+            border-radius: 10px;
+        } */
+        
+        .login-card {
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .image-section {
+            border-radius: 0 0 10px 10px;
+            min-height: 180px;
+            background-size: 100%;
+        }
+        
+        .floating-circle {
+            font-size: 1.5rem;
+        }
+    }
+
+    /* Ensure image is visible on large screens */
+    @media (min-width: 992px) {
+        /* .auth-inner {
+            flex-direction: row;
+        } */
+        
+        .login-section {
+            flex: 0 0 50%;
+        }
+        
+        .image-section {
+            flex: 0 0 50%;
+            border-radius: 0 20px 20px 0;
+            min-height: 500px;
+            background-size: 85%;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .image-section {
+            min-height: 600px;
+            background-size: 80%;
+        }
     }
 </style>
 
@@ -119,15 +228,16 @@
     <div class="floating-circle circle-13">⚪</div>
     <div class="floating-circle circle-14">⚪</div>
     <div class="floating-circle circle-15">⚪</div>
+    
     <div class="auth-inner">
         <!-- Reset Password Section -->
-        <div class="col-lg-6 d-flex align-items-center auth-bg">
-            <div class="login-card mx-auto w-100 p-3">
-                <a class="brand-logo d-flex align-items-center" href="/">
-                    <img src="{{ asset('assets/frontend/img/foto_logo.png') }}" alt="Logo" width="50" height="50">
-                    <h2 class="brand-text text-primary ml-1 mb-0">RA Al Barokah</h2>       
+        <div class="login-section">
+            <div class="login-card">
+                <a class="brand-logo d-flex align-items-center mb-3" href="/">
+                    <img src="{{ asset('Assets/Frontend/img/foto_logo.png') }}" alt="Logo" width="50" height="50">
+                    <h2 class="brand-text text-primary ml-2 mb-0">RA Al Barokah</h2>       
                 </a>
-
+                
                 @if (session('status'))
                     <div class="alert alert-success">
                         <div class="alert-body">
@@ -138,9 +248,9 @@
                 @endif
 
                 <h2 class="card-title font-weight-bold mb-1">Reset Password</h2>
-                <p class="card-text mb-2">Masukkan email Anda untuk menerima link reset password</p>
+                <p class="card-text mb-3">Masukkan email Anda untuk menerima link reset password</p>
 
-                <form class="auth-login-form mt-2" method="POST" action="{{ route('password.email') }}">
+                <form class="auth-login-form" method="POST" action="{{ route('password.email') }}">
                     @csrf
 
                     <div class="form-group">
@@ -151,17 +261,20 @@
                         @enderror
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100">
+                    <button type="submit" class="btn btn-primary w-100 mb-3">
                         Kirim Link Reset Password
                     </button>
                 </form>
+
+                <p class="text-center">
+                    Ingat password? <a href="{{ route('login') }}">Kembali ke Login</a>
+                </p>
             </div>
         </div>
         <!-- /Reset Password Section -->
 
         <!-- Image Section -->
-        <div class="col-lg-6 img-side d-none d-lg-flex">
-            <!-- Image by CSS -->
+        <div class="image-section">
         </div>
         <!-- /Image Section -->
     </div>

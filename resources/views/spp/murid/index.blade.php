@@ -14,7 +14,6 @@
                     <thead class="table-light">
                         <tr>
                             <th>No</th>
-                            <th>NISN</th>
                             <th>Nama</th>
                             <th>Email</th>
                             <th>Pembayaran Bulan {{ \Carbon\Carbon::parse($bulanIni)->translatedFormat('F') }}</th>
@@ -22,37 +21,30 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($murid as $key => $murid)
+                        @foreach ($paymentDetails as $key => $payment)
                             @php
-                                $paymentThisMonth = $murid->detailPaymentSpp ? $murid->detailPaymentSpp->first() : null;
-                                $parentPayment = $murid->payment ? $murid->payment->first() : null;
+                                // $paymentThisMonth = $payment->detailPaymentSpp ? $payment->detailPaymentSpp->first() : null;
+                                // $parentPayment = $payment->payment ? $payment->payment->first() : null;
+                                $statusPayment = $payment->status;
                             @endphp
                             <tr>
                                 <td class="text-center">{{ $key + 1 }}</td>
-                                <td>{{ $murid->muridDetail->nisn ?? 'N/A' }}</td>
-                                <td>{{ $murid->name }}</td>
-                                <td>{{ $murid->email }}</td>
+                                
+                                <td>{{ $payment->payment->user->name }}</td>
+                                <td>{{ $payment->payment->user->email }}</td>
                                 <td class="text-center">
-                                    @if ($paymentThisMonth)
-                                        @if ($paymentThisMonth->status == 'paid')
+                                        @if ($statusPayment == 'paid')
                                             <span class="badge bg-success">LUNAS</span>
-                                        @elseif ($paymentThisMonth->status == 'pending')
+                                        @elseif ($statusPayment == 'pending')
                                             <span class="badge bg-info">DIPROSES</span>
                                         @else
                                             <span class="badge bg-warning">BELUM LUNAS</span>
                                         @endif
-                                    @else
-                                        <span class="badge bg-danger">BELUM DIBAYAR</span>
-                                    @endif
                                 </td>
                                 <td class="text-center">
-                                    @if ($parentPayment)
-                                        <a href="{{ route('spp.murid.detail', $murid->id) }}" class="btn btn-sm btn-primary">
+                                        <a href="{{ route('spp.murid.detail', $payment->id) }}" class="btn btn-sm btn-primary">
                                             <i data-feather="eye"></i> Detail
                                         </a>
-                                    @else
-                                        <span>-</span>
-                                    @endif
                                 </td>
                             </tr>
                         @endforeach

@@ -28,6 +28,7 @@
         </div>
     </div>
 </div>
+
 <div class="service1-area">
     <div class="service1-inner-area">
         <!-- <div class="container">
@@ -63,3 +64,54 @@
         </div>
     </div>
 </div>
+
+<style>
+    /* Custom styling for default-big-btn */
+    .default-big-btn {
+        background-color: #283046 !important;
+        border: 2px solid #283046 !important;
+        color: #ffffff !important;
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: bold;
+        text-decoration: none;
+        border-radius: 5px;
+        display: inline-block;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .default-big-btn:hover {
+        background-color: #1e243a !important;
+        border-color: #1e243a !important;
+        color: #ffffff !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(40, 48, 70, 0.3);
+        text-decoration: none;
+    }
+
+    .default-big-btn:focus,
+    .default-big-btn:active {
+        background-color: #283046 !important;
+        border-color: #283046 !important;
+        color: #ffffff !important;
+        outline: none;
+        text-decoration: none;
+    }
+
+    /* Responsive adjustments for button */
+    @media (max-width: 768px) {
+        .default-big-btn {
+            padding: 10px 25px;
+            font-size: 14px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .default-big-btn {
+            padding: 8px 20px;
+            font-size: 13px;
+        }
+    }
+</style>

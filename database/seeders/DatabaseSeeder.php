@@ -21,7 +21,8 @@ class DatabaseSeeder extends Seeder
             IndoBankSeeder::class,
             SettingSeeder::class,
             KelasSeeder::class,
-            JurusanSeeder::class
+            JurusanSeeder::class,
+            MuridSeeder::class
         ]);
     }
 }

@@ -33,7 +33,7 @@ class MuridController extends Controller
 
     public function create()
     {
-        $kelas = Kelas::all(); // Pass kelas data to create view
+        $kelas = Kelas::all(); 
         return view("backend.pengguna.murid.create", compact("kelas"));
     }
 
