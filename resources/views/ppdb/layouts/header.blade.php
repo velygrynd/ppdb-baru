@@ -35,7 +35,7 @@
                 </div>
             </div>
         </div>
-        <div class="main-menu-area bg-primary" id="sticker">
+        <div class="main-menu-area" style="background-color: #283046;" id="sticker">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
