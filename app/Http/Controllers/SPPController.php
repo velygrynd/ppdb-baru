@@ -83,7 +83,6 @@ class SPPController extends Controller
                 'year' => $tahunAjaranAktif
             ], [
                 'amount' => 0,
-                'is_active' => true,
                 'status' => 'belum_bayar'
             ]);
             
@@ -202,6 +201,7 @@ class SPPController extends Controller
      * DIPERBAIKI: Integrasi yang lebih baik dengan SppSetting dari SettingController
      */
     public function tagihanMurid()
+    
     {
         try {
             $user = Auth::user();
