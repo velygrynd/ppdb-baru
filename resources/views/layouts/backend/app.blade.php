@@ -50,6 +50,7 @@
 
 
     @include('layouts.backend.scripts')
+    @stack('js')
     @yield('scripts')
 </body>
 <!-- END: Body-->

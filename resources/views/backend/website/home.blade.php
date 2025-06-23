@@ -90,7 +90,7 @@
                         <div class="meetup-img-wrapper rounded-top text-center">
                             <img src="{{asset('assets/frontend/img/foto_logo.png')}}" alt="Meeting Pic" height="170" />
                         </div>
-                         <div class="card-body">
+                        <div class="card-body">
                             <div class="mb-2">
                                 <span class="badge badge-primary">Event 1</span>
                             </div>
@@ -159,9 +159,9 @@
                         <div class="meetup-img-wrapper rounded-top text-center">
                             <img src="{{asset('assets/frontend/img/foto_logo.png')}}" alt="Meeting Pic" height="170" />
                         </div>
-                         <div class="card-body">
+                        <div class="card-body">
                             <div class="mb-2">
-                                <span class="badge badge-success">Event 2</span>
+                                <span class="badge badge-primary">Event 2</span>
                             </div>
                             <div class="meetup-header d-flex align-items-center">
                                 <div class="meetup-day">
@@ -186,7 +186,7 @@
                                 </div>
                             </div>
                             <div class="media">
-                                <div class="avatar bg-light-success rounded mr-1">
+                                <div class="avatar bg-light-primary rounded mr-1">
                                     <div class="avatar-content">
                                         <i data-feather="calendar" class="avatar-icon font-medium-3"></i>
                                     </div>
@@ -209,7 +209,7 @@
                                 </div>
                             </div>
                             <div class="media">
-                                <div class="avatar bg-light-success rounded mr-1">
+                                <div class="avatar bg-light-primary rounded mr-1">
                                     <div class="avatar-content">
                                         <i data-feather="map-pin" class="avatar-icon font-medium-3"></i>
                                     </div>
@@ -228,9 +228,9 @@
                         <div class="meetup-img-wrapper rounded-top text-center">
                             <img src="{{asset('assets/frontend/img/foto_logo.png')}}" alt="Meeting Pic" height="170" />
                         </div>
-                         <div class="card-body">
+                        <div class="card-body">
                             <div class="mb-2">
-                                <span class="badge badge-warning">Event 3</span>
+                                <span class="badge badge-primary">Event 3</span>
                             </div>
                             <div class="meetup-header d-flex align-items-center">
                                 <div class="meetup-day">
@@ -255,7 +255,7 @@
                                 </div>
                             </div>
                             <div class="media">
-                                <div class="avatar bg-light-warning rounded mr-1">
+                                <div class="avatar bg-light-primary rounded mr-1">
                                     <div class="avatar-content">
                                         <i data-feather="calendar" class="avatar-icon font-medium-3"></i>
                                     </div>
@@ -278,7 +278,7 @@
                                 </div>
                             </div>
                             <div class="media">
-                                <div class="avatar bg-light-warning rounded mr-1">
+                                <div class="avatar bg-light-primary rounded mr-1">
                                     <div class="avatar-content">
                                         <i data-feather="map-pin" class="avatar-icon font-medium-3"></i>
                                     </div>

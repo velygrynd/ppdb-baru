@@ -21,7 +21,10 @@
 <script src="{{asset('Assets/Backend/js/core/app-menu.js')}}"></script>
 <script src="{{asset('Assets/Backend/js/core/app.js')}}"></script>
 <!-- END: Theme JS-->
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <!-- BEGIN: Page JS-->
 <script src="{{asset('Assets/Backend/js/scripts/tables/table-datatables-advanced.js')}}"></script>
 <script src="{{asset('Assets/Backend/js/scripts/forms/form-select2.js')}}"></script>

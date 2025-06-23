@@ -18,6 +18,7 @@ use App\Models\DetailPaymentSpp;
 use App\Models\PaymentSpp;
 use App\Models\SppSetting;
 use App\Models\BankAccount;
+use Illuminate\Support\Facades\Session;
 
 class SPPController extends Controller
 {
@@ -30,37 +31,48 @@ class SPPController extends Controller
      */
     public function murid(Request $request)
     {
-        $bulanIni = Carbon::now()->format('F');
-        $tahunAjaranAktif = '2024/2025';
+        $payments = PaymentSpp::with('user')->get();
 
-        // Filter berdasarkan kelas jika diperlukan
-        $user = auth()->user();
-        $selectedKelas = $request->get('kelas_id');
+        return view("spp::murid.index", compact('payments'));
+    }
 
-        $murid = User::where('role', 'murid')
-    ->with([
-        'muridDetail',
-        'kelas',
-        'payment' => function ($q) use ($tahunAjaranAktif, $bulanIni) {
-            $q->where('year', $tahunAjaranAktif)
-              ->with(['details' => function ($d) use ($bulanIni) {
-                  $d->where('month', $bulanIni);
-              }]);
+    public function acceptPayment($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $payment = PaymentSpp::findOrFail($id);
+            $payment->update([
+                'is_active' => true
+            ]);
+
+            DB::commit();
+            return back()->with('success', 'Pembayaran berhasil diterima.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error acceptPayment: ' . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan saat menerima pembayaran.');
         }
-    ])
-    ->get();
+    }
 
-    $paymentDetails = DetailPaymentSpp::with(['payment.user'])->get();
+    public function rejectPayment($id)
+    {
+        try {
+            DB::beginTransaction();
 
-            // dd($studentsQuery);
-        // Filter berdasarkan kelas jika ada
-        if ($selectedKelas) {
-            $studentsQuery->where('kelas_id', $selectedKelas);
+            $payment = PaymentSpp::findOrFail($id);
+            $payment->update([
+                'is_active' => false,
+                'amount' => 0
+            ]);
+
+            DB::commit();
+            return back()->with('success', 'Pembayaran berhasil ditolak.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error rejectPayment: ' . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan saat menolak pembayaran.');
         }
-
-        $kelas = Kelas::all(); // Untuk dropdown filter
-
-        return view("spp::murid.index", compact('murid', 'paymentDetails', 'bulanIni', 'kelas', 'selectedKelas'));
     }
 
     /**
@@ -72,11 +84,11 @@ class SPPController extends Controller
             $user = User::with(['muridDetail', 'kelas'])->find($userId);
             if (!$user) {
                 return redirect()->route('spp.murid.index')
-                ->with('error', 'Data murid tidak ditemukan.');
+                    ->with('error', 'Data murid tidak ditemukan.');
             }
-                        
+
             $tahunAjaranAktif = '2025';
-            
+
             // Cari atau buat record pembayaran jika belum ada
             $payment = PaymentSpp::firstOrCreate([
                 'user_id' => $userId,
@@ -85,7 +97,7 @@ class SPPController extends Controller
                 'amount' => 0,
                 'status' => 'belum_bayar'
             ]);
-            
+
             // Muat relasi yang diperlukan
             $payment->load([
                 "detailPayment.user.muridDetail",
@@ -134,9 +146,9 @@ class SPPController extends Controller
                 'kelas',
                 'payment' => function ($q) use ($tahunAjaranAktif, $bulanIni) {
                     $q->where('year', $tahunAjaranAktif)
-                      ->with(['details' => function ($d) use ($bulanIni) {
-                          $d->where('month', $bulanIni);
-                      }]);
+                        ->with(['details' => function ($d) use ($bulanIni) {
+                            $d->where('month', $bulanIni);
+                        }]);
                 }
             ])
             ->get();
@@ -201,11 +213,10 @@ class SPPController extends Controller
      * DIPERBAIKI: Integrasi yang lebih baik dengan SppSetting dari SettingController
      */
     public function tagihanMurid()
-    
+
     {
         try {
             $user = Auth::user();
-            $tahunAjaranAktif = '2024/2025';
 
             // Pastikan user memiliki kelas_id
             if (!$user->kelas_id) {
@@ -243,12 +254,12 @@ class SPPController extends Controller
             $bulanActive = $sppSetting;
             // Ambil data pembayaran yang sudah ada
             $tagihanBulanan = PaymentSpp::where('user_id', $user->id)
-            ->whereIn('bulan', $sppSetting)
+                ->whereIn('bulan', $sppSetting)
                 ->get();
 
             // Ambil data bank
             $bank = BankAccount::where('is_active', 1)->get();
-// dd($tagihanBulanan);
+            // dd($tagihanBulanan);
             return view('murid::pembayaran.index', compact('tagihanBulanan', 'bulanActive', 'bank', 'kelas'));
         } catch (Exception $e) {
             
@@ -405,38 +416,55 @@ class SPPController extends Controller
         try {
             DB::beginTransaction();
 
-            $payment = DetailPaymentSpp::findOrFail($id);
+            $pembayaran = PaymentSpp::findOrFail($id);
 
-            // Hapus file lama jika ada file baru
-            if ($request->hasFile('file') && $payment->file) {
-                Storage::delete('public/images/bukti_payment/' . $payment->file);
+            // Pastikan pembayaran milik user yang login
+            if ($pembayaran->user_id !== Auth::id()) {
+                abort(403, 'Unauthorized access');
             }
 
-            if ($request->hasFile('file')) {
-                $file = $request->file('file');
-                $file_payment = 'pembayaran-' . time() . '-' . Auth::id() . "." . $file->getClientOriginalExtension();
+            $user = Auth::user();
 
-                // Simpan file baru
-                $file->storeAs('public/images/bukti_payment', $file_payment);
+            // Handle file upload
+            $file_payment = $pembayaran->file; // Default: file lama
+            if ($request->hasFile("bukti_pembayaran")) {
+                $file = $request->file("bukti_pembayaran");
+                $file_payment = 'payment-' . time() . '-' . Auth::id() . '.' . $file->getClientOriginalExtension();
+                $tujuan_upload = 'public/images/bukti_payment';
+                $file->storeAs($tujuan_upload, $file_payment);
 
-                $payment->file = $file_payment;
+                // Hapus file lama jika ada
+                if ($pembayaran->file && Storage::exists($tujuan_upload . '/' . $pembayaran->file)) {
+                    Storage::delete($tujuan_upload . '/' . $pembayaran->file);
+                }
             }
 
-            $payment->status              = 'pending';
-            $payment->sender              = $request->sender;
-            $payment->bank_sender         = $request->bank_sender;
-            $payment->destination_bank    = $request->destination_bank;
-            $payment->save();
+            // Ambil data SPP Setting
+            $sppSetting = SppSetting::where('kelas_id', $user->kelas_id)
+                ->where(function ($query) use ($pembayaran) {
+                    if ($pembayaran->bulan) {
+                        $query->where('bulan', $pembayaran->bulan);
+                    } else {
+                        $query->whereNull('bulan');
+                    }
+                })
+                ->where('tahun_ajaran', $pembayaran->year)
+                ->first();
+
+            // Update data pembayaran
+            $pembayaran->update([
+                'amount' => $sppSetting ? $sppSetting->amount : 0,
+                'bukti_pembayaran' => $file_payment,
+            ]);
 
             DB::commit();
 
-            return redirect()->route('murid.pembayaran.index')
-                ->with('success', 'Bukti pembayaran berhasil diperbarui. Mohon tunggu konfirmasi dari Administrator.');
-        } catch (Exception $e) {
-            dd($e);
+            Session::flash('success', 'Bukti pembayaran berhasil dikirim ulang. Mohon tunggu konfirmasi dari Administrator.');
+            return redirect()->route('murid.pembayaran.index');
+        } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error Update Bukti Pembayaran: ' . $e->getMessage());
-            return back()->with('error', 'Terjadi kesalahan saat memperbarui bukti pembayaran.');
+            Log::error('Error in PembayaranController@update: ' . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan saat mengirim bukti pembayaran. Silakan coba lagi.');
         }
     }
 

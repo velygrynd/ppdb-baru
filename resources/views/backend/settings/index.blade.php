@@ -21,7 +21,7 @@
     </div>
     @endif
 
-   @if ($errors->any())
+    @if ($errors->any())
     <div class="alert alert-danger" role="alert">
         <div class="alert-body">
             <strong>Gagal, Data yang dimasukan tidak valid !</strong>
@@ -33,7 +33,8 @@
             <button type="button" class="close" data-dismiss="alert">×</button>
         </div>
     </div>
-   @endif
+    @endif
+
     <div class="content-overlay"></div>
     <div class="header-navbar-shadow"></div>
     <div class="content-wrapper container-xxl p-0">
@@ -57,7 +58,6 @@
                                     <span class="font-weight-bold">Account Bank</span>
                                 </a>
                             </li>
-
                             <li class="nav-item">
                                 <a class="nav-link" id="spp-setting" data-toggle="pill" href="#sppsetting" aria-expanded="false">
                                     <i data-feather="dollar-sign" class="font-medium-3 mr-1"></i>
@@ -74,7 +74,6 @@
                                         <div class="row">
                                             @foreach (Auth::user()->banks as $bank_account)
                                             <div class="col-md-4">
-                                                {{-- Note: Anda perlu membuat modal untuk edit bank --}}
                                                 <a data-toggle="modal" data-target="#editBankModal-{{$bank_account->id}}">
                                                     <div class="card bg-light-secondary">
                                                         <div class="card-body text-center">
@@ -102,10 +101,7 @@
                                         </div>
                                     </div>
 
-                                    {{-- form setting SPP --}}
                                     <div class="tab-pane fade" id="sppsetting" role="tabpanel" aria-labelledby="spp-settings" aria-expanded="false">
-                                       
-
                                         <button class="btn btn-primary mb-2" data-toggle="modal" data-target="#addSppModal">
                                             <i data-feather="plus"></i> Tambah Setting SPP
                                         </button>
@@ -149,7 +145,6 @@
                                                     </tr>
                                                     @empty
                                                     <tr>
-                                                        {{-- Pesan disesuaikan jika ada filter aktif --}}
                                                         <td colspan="5" class="text-center">
                                                             @if ($selectedKelas)
                                                                 Tidak ada data pengaturan SPP untuk kelas yang dipilih.
@@ -169,10 +164,54 @@
                     </div>
                 </div>
             </section>
-            {{-- Menginclude semua file modal dari direktori yang sama --}}
+
             @include('backend.settings.addBank')
             @include('backend.settings.addSpp')
-            @include('backend.settings.editSpp')
+
+            <div class="modal fade" id="editSppModal" tabindex="-1" role="dialog" aria-labelledby="editSppModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <form method="POST" id="edit-spp-form">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Setting SPP</h5>
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span>&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="edit-kelas_id">Kelas</label>
+                                    <select name="kelas_id" id="edit-kelas_id" class="form-control select2" required>
+                                        <option value="">-- Pilih Kelas --</option>
+                                        @foreach($kelas as $k)
+                                            <option value="{{ $k->id }}">{{ $k->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit-tahun_ajaran">Tahun Ajaran</label>
+                                    <input type="text" name="tahun_ajaran" id="edit-tahun_ajaran" class="form-control" placeholder="Contoh: 2024/2025" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit-bulan">Bulan (Opsional)</label>
+                                    <input type="text" name="bulan" id="edit-bulan" class="form-control" placeholder="Contoh: Juli">
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit-amount">Biaya SPP</label>
+                                    <input type="number" name="amount" id="edit-amount" class="form-control" placeholder="Contoh: 150000" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
         </div>
     </div>
 @endsection
@@ -180,7 +219,7 @@
 @push('js')
 <script>
     $('#editSppModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget); // Tombol yang memicu modal
+        var button = $(event.relatedTarget);
         var id = button.data('id');
         var kelas_id = button.data('kelas_id');
         var tahun_ajaran = button.data('tahun_ajaran');
@@ -191,9 +230,13 @@
         var modal = $(this);
         modal.find('#edit-kelas_id').val(kelas_id).trigger('change');
         modal.find('#edit-tahun_ajaran').val(tahun_ajaran);
-        modal.find('#edit-bulan').val(bulan);
+        modal.find('#edit-bulan').val(bulan ?? '');
         modal.find('#edit-amount').val(amount);
-        modal.find('form').attr('action', url);
+        modal.find('#edit-spp-form').attr('action', url);
+    });
+
+    $('#edit-kelas_id').select2({
+        dropdownParent: $('#editSppModal')
     });
 </script>
 @endpush
