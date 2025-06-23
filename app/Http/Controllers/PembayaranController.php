@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session; 
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 use App\Models\SppSetting;
 use App\Models\DetailPaymentSpp;
@@ -69,12 +69,11 @@ class PembayaranController extends Controller
             $bankAccounts = BankAccount::where('is_active', 1)->get();
 
             return view('murid::pembayaran.index', compact(
-                'sppSettings', 
-                'payments', 
-                'tahunAjaranAktif', 
+                'sppSettings',
+                'payments',
+                'tahunAjaranAktif',
                 'bankAccounts'
             ));
-
         } catch (\Exception $e) {
             Log::error('Error in PembayaranController@index: ' . $e->getMessage());
             return view('murid::pembayaran.index', [
@@ -134,7 +133,7 @@ class PembayaranController extends Controller
             // Buat atau ambil parent payment
             $parentPayment = PaymentSpp::firstOrCreate(
                 [
-                    'year' => $request->year, 
+                    'year' => $request->year,
                     'user_id' => $murid->id
                 ],
                 [
@@ -161,7 +160,6 @@ class PembayaranController extends Controller
 
             return redirect()->route('pembayaran.edit', $newPayment->id)
                 ->with('success', 'Tagihan berhasil dibuat. Silakan lanjutkan konfirmasi pembayaran.');
-
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error in PembayaranController@store: ' . $e->getMessage());
@@ -175,22 +173,28 @@ class PembayaranController extends Controller
     public function edit($id)
     {
         try {
-            // Ambil data pembayaran milik murid yang login
-            $payment = DetailPaymentSpp::with(['payment'])->first();
-                // ->where('payment_id', Auth::id())
-                // ->findOrFail($id);
-            $user = User::find($payment->payment->user_id);
+            $user = Auth::user();
 
-            // Cek status pembayaran
-            if ($payment->status == 'paid') {
+            // Ambil data pembayaran milik user saat ini dan berdasarkan ID setting (jika perlu)
+            $payment = PaymentSpp::where('id', $id)
+                ->where('user_id', $user->id)
+                ->first();
+
+            if (!$payment) {
                 return redirect()->route('pembayaran.index')
-                    ->with('error','Pembayaran untuk bulan ini sudah lunas.');
+                    ->with('error', 'Data pembayaran tidak ditemukan atau bukan milik Anda.');
             }
 
-            // Ambil rekening tujuan (milik Admin/TU)
+            // Cek status pembayaran
+            if ($payment->amount > 0 && $payment->bukti_pembayaran != null) {
+                return redirect()->route('pembayaran.index')
+                    ->with('error', 'Pembayaran untuk bulan ini sudah lunas.');
+            }
+
+            // Ambil rekening tujuan
             $accountbanks = BankAccount::where('is_active', 1)->get();
-            
-            // Fallback jika tidak ada bank account di SPP module
+
+            // Fallback jika tidak ada bank account di modul SPP
             if ($accountbanks->isEmpty()) {
                 $adminUser = User::where('role', 'Admin')->with('banks')->first();
                 if ($adminUser && $adminUser->banks) {
@@ -198,20 +202,23 @@ class PembayaranController extends Controller
                 }
             }
 
-            // Bank untuk dropdown pengirim
-            $bank = Bank::all();
-
             // Validasi apakah ada rekening tujuan
             if ($accountbanks->isEmpty()) {
                 return back()->with('error', 'Rekening tujuan pembayaran tidak ditemukan. Hubungi Administrator.');
             }
 
-            return view('murid::pembayaran.edit', compact('payment', 'user', 'accountbanks', 'bank'));
+            $sppSetting = SppSetting::where('kelas_id', $user->kelas_id)
+                ->where('bulan', $payment->bulan)
+                ->where('tahun_ajaran', $payment->year)
+                ->first();
 
+            // Ambil daftar bank untuk dropdown pengirim
+            $bank = Bank::all();
+
+            return view('murid::pembayaran.edit', compact('payment', 'sppSetting', 'user', 'accountbanks', 'bank'));
         } catch (\Exception $e) {
-            dd($e);
             Log::error('Error in PembayaranController@edit: ' . $e->getMessage());
-            return back()->with('error', 'Data pembayaran tidak ditemukan.');
+            return back()->with('error', 'Terjadi kesalahan saat mengambil data pembayaran.');
         }
     }
 
@@ -219,49 +226,48 @@ class PembayaranController extends Controller
      * Update konfirmasi pembayaran dari murid
      */
     public function update(ConfirmPaymentRequest $request, DetailPaymentSpp $pembayaran)
-{
-    try {
-        DB::beginTransaction();
+    {
+        try {
+            DB::beginTransaction();
 
-        // Pastikan pembayaran milik user yang login
-        if ($pembayaran->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized access');
-        }
-
-        // Handle file upload
-        $file_payment = $pembayaran->file; // Keep existing file as default
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $file_payment = 'payment-'.time().'-'.Auth::id().".".$file->getClientOriginalExtension();
-            $tujuan_upload = 'public/images/bukti_payment';
-            $file->storeAs($tujuan_upload, $file_payment);
-
-            // Hapus file lama jika ada
-            if ($pembayaran->file && Storage::exists('public/images/bukti_payment/'.$pembayaran->file)) {
-                Storage::delete('public/images/bukti_payment/'.$pembayaran->file);
+            // Pastikan pembayaran milik user yang login
+            if ($pembayaran->user_id !== Auth::id()) {
+                abort(403, 'Unauthorized access');
             }
+
+            // Handle file upload
+            $file_payment = $pembayaran->file; // Keep existing file as default
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+                $file_payment = 'payment-' . time() . '-' . Auth::id() . "." . $file->getClientOriginalExtension();
+                $tujuan_upload = 'public/images/bukti_payment';
+                $file->storeAs($tujuan_upload, $file_payment);
+
+                // Hapus file lama jika ada
+                if ($pembayaran->file && Storage::exists('public/images/bukti_payment/' . $pembayaran->file)) {
+                    Storage::delete('public/images/bukti_payment/' . $pembayaran->file);
+                }
+            }
+            // Update data pembayaran
+            $pembayaran->update([
+                'file' => $file_payment,
+                'sender' => $request->sender,
+                'status' => 'pending',
+                'admin_note' => null,
+                'approved_by' => null,
+                'approved_at' => null
+            ]);
+
+            DB::commit();
+
+            Session::flash('success', 'Bukti pembayaran berhasil dikirim ulang. Mohon tunggu konfirmasi dari Administrator.');
+            return redirect()->route('murid.pembayaran.index');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error in PembayaranController@update: ' . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan saat mengirim bukti pembayaran. Silakan coba lagi.');
         }
-        // Update data pembayaran
-        $pembayaran->update([
-            'file' => $file_payment,
-            'sender' => $request->sender,
-            'status' => 'pending',
-            'admin_note' => null,
-            'approved_by' => null,
-            'approved_at' => null
-        ]);
-
-        DB::commit();
-
-        Session::flash('success', 'Bukti pembayaran berhasil dikirim ulang. Mohon tunggu konfirmasi dari Administrator.');
-        return redirect()->route('murid.pembayaran.index');
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        Log::error('Error in PembayaranController@update: ' . $e->getMessage());
-        return back()->with('error', 'Terjadi kesalahan saat mengirim bukti pembayaran. Silakan coba lagi.');
     }
-}
 
     /**
      * Hapus pembayaran (opsional)
@@ -272,15 +278,15 @@ class PembayaranController extends Controller
             DB::beginTransaction();
 
             $payment = DetailPaymentSpp::where('user_id', Auth::id())->findOrFail($id);
-            
+
             // Hanya bisa dihapus jika status masih unpaid atau rejected
             if (!in_array($payment->status, ['unpaid', 'rejected'])) {
                 return back()->with('error', 'Pembayaran dengan status ' . $payment->status . ' tidak dapat dihapus.');
             }
 
             // Hapus file bukti jika ada
-            if ($payment->file && Storage::exists('public/images/bukti_payment/'.$payment->file)) {
-                Storage::delete('public/images/bukti_payment/'.$payment->file);
+            if ($payment->file && Storage::exists('public/images/bukti_payment/' . $payment->file)) {
+                Storage::delete('public/images/bukti_payment/' . $payment->file);
             }
 
             // Update total amount di parent payment
@@ -295,7 +301,6 @@ class PembayaranController extends Controller
 
             return redirect()->route('murid.pembayaran.index')
                 ->with('success', 'Tagihan pembayaran berhasil dihapus.');
-
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error in PembayaranController@destroy: ' . $e->getMessage());

@@ -14,7 +14,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\SPPControllerSPP\Entities\BankAccount;
 use App\Models\BankAccount as ModelsBankAccount;
+use App\Models\PaymentSpp;
 use App\Models\SppSetting;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class SettingController extends Controller
@@ -29,7 +31,7 @@ class SettingController extends Controller
                 ->where('kelas_id', $user->kelas_id)
                 ->orderBy('created_at', 'desc')
                 ->get();
-            
+
             $kelas = Kelas::where('id', $user->kelas_id)->get();
             $selectedKelas = $user->kelas_id;
         } else {
@@ -96,19 +98,17 @@ class SettingController extends Controller
 
     public function storeSppSetting(Request $request)
     {
-        // Validasi input yang lebih lengkap
         $request->validate([
             'amount' => 'required|integer|min:0',
             'kelas_id' => 'required|exists:kelas,id',
-            'tahun_ajaran' => 'required|string|max:20',
+            'tahun_ajaran' => 'required|integer',
             'bulan' => 'nullable|string|max:20'
         ]);
 
         try {
-            // Cek apakah setting untuk kelas, tahun ajaran, dan bulan sudah ada
             $existingSetting = SppSetting::where('kelas_id', $request->kelas_id)
                 ->where('tahun_ajaran', $request->tahun_ajaran)
-                ->where(function($query) use ($request) {
+                ->where(function ($query) use ($request) {
                     if ($request->bulan) {
                         $query->where('bulan', $request->bulan);
                     } else {
@@ -122,19 +122,31 @@ class SettingController extends Controller
                 return back()->withInput();
             }
 
-            // Buat setting baru
-            SppSetting::create([
-                'amount' => $request->amount,
-                'kelas_id' => $request->kelas_id,
-                'tahun_ajaran' => $request->tahun_ajaran,
-                'bulan' => $request->bulan,
-                'update_by' => Auth::id(),
-                'is_active' => 1 // Tambahkan status aktif
-            ]);
-            
-            Session::flash('success', 'Setting SPP Berhasil Ditambah. Sekarang murid dapat melihat tagihan SPP di halaman pembayaran mereka.');
+            DB::transaction(function () use ($request) {
+                $sppSetting = SppSetting::create([
+                    'amount' => $request->amount,
+                    'kelas_id' => $request->kelas_id,
+                    'tahun_ajaran' => $request->tahun_ajaran,
+                    'bulan' => $request->bulan,
+                    'update_by' => Auth::id(),
+                    'is_active' => 1
+                ]);
+
+                $users = User::where('kelas_id', $sppSetting->kelas_id)->get();
+
+                foreach ($users as $user) {
+                    PaymentSpp::create([
+                        'user_id' => $user->id,
+                        'is_active' => false,
+                        'year' => $sppSetting->tahun_ajaran,
+                        'bulan' => $sppSetting->bulan,
+                        'amount' => 0
+                    ]);
+                }
+            });
+
+            Session::flash('success', 'Setting SPP berhasil ditambah. Sekarang murid dapat melihat tagihan SPP di halaman pembayaran mereka.');
             return back();
-            
         } catch (Exception $e) {
             Log::error('Error storing SPP Setting: ' . $e->getMessage());
             Session::flash('error', 'Terjadi kesalahan saat menyimpan setting SPP: ' . $e->getMessage());
@@ -153,12 +165,11 @@ class SettingController extends Controller
 
         try {
             $sppSetting = SppSetting::findOrFail($id);
-            
-            // Cek duplikasi untuk update (kecuali record yang sedang diupdate)
+
             $existingSetting = SppSetting::where('kelas_id', $request->kelas_id)
                 ->where('tahun_ajaran', $request->tahun_ajaran)
                 ->where('id', '!=', $id)
-                ->where(function($query) use ($request) {
+                ->where(function ($query) use ($request) {
                     if ($request->bulan) {
                         $query->where('bulan', $request->bulan);
                     } else {
@@ -172,14 +183,33 @@ class SettingController extends Controller
                 return back()->withInput();
             }
 
-            $sppSetting->update([
-                'amount' => $request->amount,
-                'kelas_id' => $request->kelas_id,
-                'tahun_ajaran' => $request->tahun_ajaran,
-                'bulan' => $request->bulan,
-                'update_by' => Auth::id()
-            ]);
-            
+            DB::transaction(function () use ($sppSetting, $request) {
+                PaymentSpp::where('year', $sppSetting->tahun_ajaran)
+                    ->where('bulan', $sppSetting->bulan)
+                    ->whereIn('user_id', User::where('kelas_id', $sppSetting->kelas_id)->pluck('id'))
+                    ->delete();
+
+                $sppSetting->update([
+                    'amount' => $request->amount,
+                    'kelas_id' => $request->kelas_id,
+                    'tahun_ajaran' => $request->tahun_ajaran,
+                    'bulan' => $request->bulan,
+                    'update_by' => Auth::id()
+                ]);
+
+                $users = User::where('kelas_id', $request->kelas_id)->get();
+
+                foreach ($users as $user) {
+                    PaymentSpp::create([
+                        'user_id' => $user->id,
+                        'year' => $request->tahun_ajaran,
+                        'is_active' => false,
+                        'bulan' => $request->bulan,
+                        'amount' => 0
+                    ]);
+                }
+            });
+
             Session::flash('success', 'Setting SPP Berhasil Diupdate.');
             return back();
         } catch (Exception $e) {
@@ -193,8 +223,16 @@ class SettingController extends Controller
     {
         try {
             $sppSetting = SppSetting::findOrFail($id);
-            $sppSetting->delete();
-            
+
+            DB::transaction(function () use ($sppSetting) {
+                PaymentSpp::where('year', $sppSetting->tahun_ajaran)
+                    ->where('bulan', $sppSetting->bulan)
+                    ->whereIn('user_id', User::where('kelas_id', $sppSetting->kelas_id)->pluck('id'))
+                    ->delete();
+
+                $sppSetting->delete();
+            });
+
             Session::flash('success', 'Setting SPP Berhasil Dihapus.');
             return back();
         } catch (Exception $e) {
@@ -203,6 +241,7 @@ class SettingController extends Controller
             return back();
         }
     }
+
 
     public function notifications(Request $request)
     {
@@ -223,12 +262,12 @@ class SettingController extends Controller
     public function checkActiveSppSettings($kelasId)
     {
         $tahunAjaranAktif = '2024/2025'; // Bisa dibuat dinamis
-        
+
         $settings = SppSetting::where('kelas_id', $kelasId)
             ->where('tahun_ajaran', $tahunAjaranAktif)
             ->where('is_active', 1)
             ->get();
-            
+
         return response()->json([
             'success' => true,
             'count' => $settings->count(),

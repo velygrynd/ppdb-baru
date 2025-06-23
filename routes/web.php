@@ -220,6 +220,12 @@ Route::group(['middleware' => ['auth', 'role:Admin|Bendahara'], 'prefix' => 'spp
     // Halaman daftar murid
     Route::get('/murid', [SPPController::class, 'murid'])->name('murid.index');
     
+    // Menyetujui pembayaran
+Route::post('/payment/{id}/accept', [SPPController::class, 'acceptPayment'])->name('payment.accept');
+
+// Menolak pembayaran
+Route::post('/payment/{id}/reject', [SPPController::class, 'rejectPayment'])->name('payment.reject');
+
     // Detail pembayaran berdasarkan user_id
     Route::get('/murid/{userId}/detail', [SPPController::class, 'detail'])->name('murid.detail');
     
