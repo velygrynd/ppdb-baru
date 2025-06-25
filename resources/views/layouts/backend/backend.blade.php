@@ -11,7 +11,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Custom Styles -->
-    <link rel="stylesheet" href="{{ asset('Assets/Backend/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/Backend/css/style.css') }}">
     <!-- Include custom styles if you have any -->
     @stack('styles') <!-- Optional for additional styles from individual pages -->
 </head>

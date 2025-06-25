@@ -6,7 +6,7 @@
                     <div class="header-top-left" style="display: flex; align-items: center;">
                         <div class="logo-area" style="flex-shrink: 0; margin-right: 15px;">
                             @if (@$footer->logo == NULL)
-                                <img class="img-responsive" src="{{asset('Assets/Frontend/img/foto_logo.jpg')}}" alt="logo" style="max-height: 70px;">
+                                <img class="img-responsive" src="{{asset('assets/Frontend/img/foto_logo.jpg')}}" alt="logo" style="max-height: 70px;">
                             @else
                                 <img class="img-responsive" src="{{asset('storage/images/logo/' .$footer->logo)}}" alt="logo" style="max-height: 70px;">
                             @endif
@@ -85,7 +85,7 @@ Konten Profil dengan Gambar
             
             <div class="profile-content" style="display: flex; background-color: #f9f9f9; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                 <div style="flex: 0 0 200px; margin-right: 30px;">
-                    <img src="{{asset('Assets/Frontend/img/foto_logo.jpg')}}" alt="RA Al Barokah" style="width: 100%; border-radius: 8px; object-fit: cover; height: 250px;">
+                    <img src="{{asset('assets/Frontend/img/foto_logo.jpg')}}" alt="RA Al Barokah" style="width: 100%; border-radius: 8px; object-fit: cover; height: 250px;">
                 </div>
                 <div style="flex: 1;">
                     <p style="font-size: 16px; line-height: 1.8; color: #34495e; text-align: justify;">

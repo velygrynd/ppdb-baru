@@ -14,7 +14,7 @@
                     </div>
                     <span class="avatar">
                         @if (Auth::user()->foto_profile == NULL)
-                            <img class="round" src="{{asset('Assets/Backend/images/user.png')}}" alt="avatar" height="40" width="40">
+                            <img class="round" src="{{asset('assets/Backend/images/user.png')}}" alt="avatar" height="40" width="40">
                         @else
                             <img class="round" src="{{asset('storage/images/profile/' .Auth::user()->foto_profile)}}" alt="avatar" height="40" width="40">
                         @endif
@@ -39,7 +39,7 @@
                         <span class="user-name font-weight-bolder">Login</span>
                     </div>
                     <span class="avatar">
-                        <img class="round" src="{{asset('Assets/Backend/images/user.png')}}" alt="avatar" height="40" width="40">
+                        <img class="round" src="{{asset('assets/Backend/images/user.png')}}" alt="avatar" height="40" width="40">
                     </span>
                 </a>
                 @endif

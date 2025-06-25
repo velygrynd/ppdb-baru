@@ -78,7 +78,7 @@
                                         <div class="media">
                                             <a href="javascript:void(0);" class="mr-25">
                                                 @if (Auth::user()->foto_profile == NULL)
-                                                    <img class="round" src="{{asset('Assets/Backend/images/user.png')}}" alt="avatar" height="80" width="80">
+                                                    <img class="round" src="{{asset('assets/Backend/images/user.png')}}" alt="avatar" height="80" width="80">
                                                 @else
                                                   
 

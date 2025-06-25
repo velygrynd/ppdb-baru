@@ -11,21 +11,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <!-- BEGIN: Vendor CSS-->
-    <link rel="stylesheet" href="{{ asset('Assets/Backend/vendors/css/vendors.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/Backend/vendors/css/vendors.min.css') }}">
     <!-- END: Vendor CSS-->
 
     <!-- BEGIN: Theme CSS-->
-    <link rel="stylesheet" href="{{ asset('Assets/Backend/css/bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ asset('Assets/Backend/css/bootstrap-extended.css') }}">
-    <link rel="stylesheet" href="{{ asset('Assets/Backend/css/colors.css') }}">
-    <link rel="stylesheet" href="{{ asset('Assets/Backend/css/components.css') }}">
-    <link rel="stylesheet" href="{{ asset('Assets/Backend/css/themes/semi-dark-layout.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/Backend/css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/Backend/css/bootstrap-extended.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/Backend/css/colors.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/Backend/css/components.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/Backend/css/themes/semi-dark-layout.css') }}">
     <!-- END: Theme CSS-->
 
     <!-- BEGIN: Page CSS-->
-    <link rel="stylesheet" href="{{ asset('Assets/Backend/css/core/menu/menu-types/vertical-menu.css') }}">
-    <link rel="stylesheet" href="{{ asset('Assets/Backend/css/plugins/forms/form-validation.css') }}">
-    <link rel="stylesheet" href="{{ asset('Assets/Backend/css/pages/page-auth.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/Backend/css/core/menu/menu-types/vertical-menu.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/Backend/css/plugins/forms/form-validation.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/Backend/css/pages/page-auth.css') }}">
     <!-- END: Page CSS-->
 
     <!-- Custom Style -->

@@ -70,7 +70,7 @@
     <h1 class="about-title">Alur Pendaftaran</h1>
 
     <div class="alur-card">
-        <img src="{{asset('Assets/Frontend/img/banner/alur.png')}}" 
+        <img src="{{asset('assets/Frontend/img/banner/alur.png')}}" 
              alt="Alur Pendaftaran" 
              class="img-fluid d-block mx-auto alur-image">
     </div>

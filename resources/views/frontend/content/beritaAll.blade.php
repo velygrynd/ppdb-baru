@@ -84,7 +84,7 @@ Berita & Kegiatan
                     @empty
                     <!-- EMPTY STATE: Tampilan ketika tidak ada data -->
                     <div class="col-12 text-center">
-                        <img src="{{asset('Assets/Frontend/img/empty.svg')}}" class="img-responsive" style="max-width: 300px; margin: 30px auto;"> <!-- GAMBAR KOSONG: Ubah ukuran dengan max-width -->
+                        <img src="{{asset('assets/Frontend/img/empty.svg')}}" class="img-responsive" style="max-width: 300px; margin: 30px auto;"> <!-- GAMBAR KOSONG: Ubah ukuran dengan max-width -->
                         <p class="text-center">Tidak ada berita atau kegiatan yang ditemukan</p> <!-- PESAN KOSONG: Ubah text pesan di sini -->
                     </div>
                     @endforelse

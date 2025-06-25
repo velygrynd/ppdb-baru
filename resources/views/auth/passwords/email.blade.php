@@ -83,7 +83,7 @@
         flex: 1;
         min-width: 300px;
         background-color: #ffffff;
-        background-image: url('/Assets/Frontend/img/cover_login.png');
+        background-image: url('/assets/Frontend/img/cover_login.png');
         background-size: 90%;
         background-position: center;
         background-repeat: no-repeat;
@@ -234,7 +234,7 @@
         <div class="login-section">
             <div class="login-card">
                 <a class="brand-logo d-flex align-items-center mb-3" href="/">
-                    <img src="{{ asset('Assets/Frontend/img/foto_logo.png') }}" alt="Logo" width="50" height="50">
+                    <img src="{{ asset('assets/Frontend/img/foto_logo.png') }}" alt="Logo" width="50" height="50">
                     <h2 class="brand-text text-primary ml-2 mb-0">RA Al Barokah</h2>       
                 </a>
                 

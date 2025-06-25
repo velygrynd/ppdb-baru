@@ -7,7 +7,7 @@
                         <div class="header-top-left" style="display: flex; align-items: center;">
                             <div class="logo-area" style="flex-shrink: 0; margin-right: 15px;">
                                 @if (@$footer->logo == NULL)
-                                    <img class="img-responsive" src="{{asset('Assets/Frontend/img/foto_logo.png')}}" alt="logo" style="max-height: 60px;">
+                                    <img class="img-responsive" src="{{asset('assets/Frontend/img/foto_logo.png')}}" alt="logo" style="max-height: 60px;">
                                 @else
                                     <img class="img-responsive" src="{{asset('storage/images/logo/' .$footer->logo)}}" alt="logo" style="max-height: 60px;">
                                 @endif
