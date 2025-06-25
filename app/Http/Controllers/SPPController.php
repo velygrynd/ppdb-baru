@@ -262,7 +262,7 @@ class SPPController extends Controller
             // dd($tagihanBulanan);
             return view('murid::pembayaran.index', compact('tagihanBulanan', 'bulanActive', 'bank', 'kelas'));
         } catch (Exception $e) {
-            dd($e);
+            
             Log::error('Error tagihanMurid: ' . $e->getMessage());
             Log::error('Stack trace: ' . $e->getTraceAsString());
 
